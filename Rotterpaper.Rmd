@@ -1,0 +1,1769 @@
+---
+title             : "Psychometric Evaluation and Validation of Bangla Rotter Internal-External Scale with Classical Test Theory and Item Response theory"
+shorttitle        : "Bangla Rotter's I-E Scale"
+
+author: 
+  - name          : "Mushfiqul Anwar Siraji"
+    affiliation   : "1"
+    corresponding : no    # Define only one corresponding author
+    address       : "Monash University"
+    email         : "mushfiqul.anwarsiraji@monash.pdf"
+    role:         
+      - Conceptualization
+      - Writing - Original Draft Preparation
+      - Writing - Review & Editing
+  - name          : "Shamsul Haque"
+    affiliation   : "1"
+    corresponding : yes   # Define only one corresponding author
+    address       : "Monash University Malaysia,Jalan Lagoon Selatan, 47500 Bandar Sunway,Selangor Darul Ehsan, Malaysia."
+    email         : " shamsul@monash.edu"
+    role:
+      - Conceptualization
+      - Writing - Review & Editing
+     
+
+affiliation:
+  - id            : "1"
+    institution   : "Monash University, Malaysia"
+  
+
+authornote: |
+  Mushfiqul Anwar Siraji   https://orcid.org/0000-0003-0127-9982
+  
+  Shamsul Haque   https://orcid.org/0000-0002-1561-6989
+  
+  We have preregistered this study’s design and analysis plan in Open Science   Framework (Preregistration DOI: 10.17605/OSF.IO/9KT87) and can be accessed at https://osf.io/9kt87. All data, analysis code underlying this article and a Rmarkdown reproducible manuscript have been made publicly available at GitHub and can be accessed at https://github.com/masiraji/Rotter-I-E-Scale.
+
+
+ 
+
+abstract: |
+  There is no psychometric tool to assess locus of control for Bangla-speaking people. Hence, we attempted to translate the 23-item Rotter's Internal-External scale into Bangla and validate it on Bangladeshi adult participants. In Study 1 (N = 300), we translated the items into Bangla and conducted an exploratory factor analysis, which revealed a one-factor solution with 12 items. In Study 2 (N =178) confirmatory factor analysis yielded the best fit with 11 items (CFI =.98, TLI = .97, RMSEA = .00). Reliability coefficient of this 11-item scale was satisfactory (McDonald’s Omega = .72). The scale’s significant correlations with Internal Control Index (a locus of control scale), Neuroticism and Openness to Experience from Big Five Personality Inventory demonstrated its convergent validity. The item quality was assessed on the combined samples of Study 1 & 2 (N=478) using the item response theory (IRT), which showed that the scale was composed of easy, moderate, and hard items. Item discrimination analysis indicated sufficient discriminating power of the items (.49 to 2.21). Test information curve showed the scale's ability to discriminate between external and internal locus of control. These psychometric properties indicate the usability of the Bangla version of Rotter's Internal-External scale.
+  
+keywords          : "Locus of Control; Classical Test Theory; Item Response Theory; Exploratory Factor Analysis; Confirmatory Factor Analysis; Convergent validity"
+wordcount         : "4962"
+
+bibliography      : ["Rotter-References.bib"]
+# csl               : vancouver.csl
+floatsintext      : no
+figurelist        : no
+tablelist         : no
+footnotelist      : no
+linenumbers       : yes
+mask              : no
+draft             : no
+
+documentclass     : "apa6"
+classoption       : "man"
+output            : 
+  papaja::apa6_pdf:
+  latex_engine: xelatex
+mainfont: Arial
+---
+
+
+```{r dependencymanager, eval=FALSE, warning=FALSE, include=FALSE}
+knitr::opts_chunk$set(warning = F, error = F, message = F)
+
+renv::init()
+```
+
+
+```{r eval=FALSE, include=FALSE}
+#if "packrat" doesnot work you can run this chunk manually to get all required packs"
+
+install.packages("devtools")
+install.packages("semTools")
+install.packages("MOTE")
+install.packages("psych")
+install.packages("dlookr")
+install.packages("tidyverse")
+install.packages("qgraph")
+install.packages("kableExtra")
+install.packages("paran")
+install.packages("EFA.MRFA")
+install.packages("rsvg")
+install.packages("ggcorrplot")
+install.packages("car")
+install.packages("semTable")
+install.packages("magick")
+install.packages("mirt")
+install.packages("cowplot")
+devtools::install_github('rich-iannone/DiagrammeR')
+devtools::install_github("crsh/papaja", force = T)
+install.packages("DiagrammeRsvg")
+devtools::install_github('SachaEpskamp/semPlot',  dependencies = T)
+devtools::install_github("crsh/citr")
+install.packages("gtsummary")
+
+```
+
+```{r setup, include = FALSE}
+library(papaja)
+library(MOTE)
+library(psych)
+library(VIM)
+library(tidyverse)
+library(WrightMap)
+library(mirt)
+library(lavaan)
+library(SimDesign)
+library(gtsummary)
+r_refs("Rotter-References.bib", append = TRUE,tweak = TRUE)
+#library(remedy)# word formatting shortcut
+#library(gramr) #grammer
+#library(magick)
+
+
+```
+
+```{r setup-chunk, include=FALSE}
+knitr::opts_chunk$set(dev = "png",
+                      dpi = 600,
+                      echo = FALSE,
+                      cache = TRUE,
+                      warning=F)
+
+```
+
+```{r ggplot2, include=F}
+apatheme=theme_bw()+
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(),
+        #text=element_text(family = "Helvetica"),
+        axis.text.x = element_text(size = 15),
+        axis.text.y = element_text(size = 15),
+        axis.title.x = element_text(size = 15),
+        axis.title.y = element_text(size = 15),
+        plot.title = element_text(size = 15),
+        legend.text = element_text(size = 15),
+        legend.title=element_blank(),
+        axis.line.x = element_line(color='black'),
+        axis.line.y = element_line(color='black'),
+        panel.border = element_rect(color = "black",
+                                    fill = NA,
+                                    size = 1))
+
+```
+
+
+---
+nocite: |
+  `r cite_r("Rotter-References.bib")`
+---
+# Introduction
+
+Locus of Control (LoC) is the individual’s belief about the contingency of the outcome of an event on their internal qualities and behavior vs. other external attributes like chance or fate [@RN1259]. LoC influences a broad spectrum of situations closely related to achievement, success and learning. The LoC can be viewed as a bipolar continuum ranging from internal to external, indicating an individual’s disposition on the reinforcement expectancy. Social learning theory suggests human behavior is lead by reinforcement and the belief regarding the dependency of the reinforcement on an individual’s ability and action  [@bandura1977social; @RN1267].Individuals with internal LoC believe the reinforcement and fundamental control over the event’s outcome are contingent on their ability, behavior and efforts. However, for the individuals with external LoC, the fundamental sense of agency of life and reinforcement are bestowed on the attributes like fate, luck, change or other powerful entities  [@RN1264; @RN1259; @rotter1972applications].
+
+Since @RN1259 introduced the term LoC, it has been widely used to understand people’s behavior in different domains, including academic achievement  [@findley1983locus; @karaman2018mediation], health [@jacobs2011predictors], professional competence[@mantesso2008continuing; @witt1988locus; @smidt2018career] and consumer behavior [@lee2018will; @rodriguez2019altruism]. Internal LoC is attributed to better health care management and self-assessment [@pourhoseinzadeh2017relationship]. Internal LoC also positively influences academic success [@karaman2018mediation] . External LoC is associated with increased depression, anxiety, stress [@kurtovic2018effect], and personality factors including high neuroticism [@HORNER1996] and low openness to experience [@RN1280; @RN1280; @RN1281; @RN1282]. Assessment of LoC is also beneficial in the different therapeutic processes [@baker1979relationship; @delsignore2007control]. Individuals with internal LoC are more receptive to information [@cavaiola2009perception], more resilient and hopeful than external LoC, thus facilitating the favorable outcome in the psychotherapy [@foon1987locus].LoC also facilitates the "Transactional Analysis" based counselling process by indicating an individual's predominant ego-states [@loffredo1998relationships]. Internal LoC is associated with "Adult" ego state and External LoC is associated with "Adapted Child" ego state [@loffredo1998relationships].
+
+Rotter's Internal-External (I-E) [@RN1259] scale is the most widely used scale to measure the LoC of an individual. However, the origin of this scale is from an individualist society [@hofstede1984culture; @smith1995rotter]. Members of individualist culture define their identity by personal life choices, whereas members of collectivist countries emphasize the membership of groups [@hofstede1984culture]. @smith1995rotter coined some fundamental problems of using Rotter's I-E scale in collectivist cultures, including 'modesty bias", where individuals may guide their responses to represent the group's opinion instead of individual preference. Also values parallel to LoC including "mastery over the environment" and "harmony with the environment" are differentially endorsed by members of different cultures [@schwartz1990individualism; @schwartz1992universals]. This indicates the cultural susceptibility of the construct: LoC which may lead to different latent structures across various cultures. @RN1259 mentioned one general factor and several other but less essential factors and conferred the structure as unidimensional. However,studies in the USA [@RN1252; @RN1253] and other countries [@niles1981dimensionality; @RN1254; @RN1264; @tyler1989cultural] have established the multidimensional nature of Rotter's I-E scale. @RN1264 summarized 20 studies which analyzed the latent structure by exploratory factor analysis(EFA). summarized 20 studies that analyzed the latent structure by exploratory factor analysis (EFA). They reported that the number of possible interpretable factors ranged between 2 to 6 with two recurring factors: "political control "and "personal control". The emergence of "political control" and "personal control" as salient factors in Rotter's I-E Scale was first reported in the work of @RN1252. He conducted an EFA on 316 (f = 157) undergraduate students and reported these two factors. Items clustered under "personal control" stemmed from the individual's inclination to prefer personal ability and hard work over luck. The "Political control" factor focuses on the individual's disposition regarding their ability to control the political and world affairs as a part of the social system. @smith1995rotter administered the Rotter's I-E scale on 9140 participants from 43 different countries and reported three interpretable dimensions: "personal-political", "individual-social" and "luck." They reported a trend of fatalism about political events and high preference on luck among the included Asian nations. However, Studies in the Netherlands [@andriessen1983analysis], Brazil [@nagelschmidt1977dimensionality], Australia [@watson1981note], Sri Lanka [@niles1981dimensionality] reported only the "personal control" factor indicating the susceptibility of the latent construct structure of Rotter's I-E scale to cultural variation.
+
+Due to this susceptibility, it is inappropriate to use the Rotter's I-E scale in Bangladesh without proper psychometric calibration. Besides, there is a dearth of psychometrically valid scales in Bangladesh to measure the LoC culturally sensitively. We conducted two studies involving Bangladeshi elementary school teachers to culturally adapt and psychometrically validate Rotter's I-E scale by following classical test theory (CTT) and item response theory (IRT). CTT uses a set of concepts (true score, observed score, reliability) and provides information on the whole scale [@devellis2006classical]. CTT attributes the observed scores obtained on a scale to the unobservable variable of interest and possible measurement errors. The reliability coefficients indicate how closely the observed score reflects the unobservable variable [@devellis2006classical]. IRT assesses the item quality across the different latent construct levels and complements the psychometric analysis by providing information regarding the item's ability to discriminate among the respondents across the latent construct continuum [@kazemi2021assessing]. It also provides information on the level of latent construct a respondent requires to attain a 50% chance to score towards the positive high construct direction for a particular item [@kazemi2021assessing]. TOur first study culturally adapted the scale and identified the latent construct structure by exploratory factor analysis. The second study verified the latent construct structure that emerged in the first study by a confirmatory factor analysis. Subsequect psychometric propertise were also established using CTT and IRT.
+
+# Study 1: Translations and Factor Structure
+
+Our first study had three objectives. First, to translate the items from the original language to the Bangla language in a culturally meaningful way. Second, to assess the content validity. Third, to conduct an exploratory factor analysis to understand the latent structure
+
+## Methods
+
+## Participants
+
+```{r data}
+data <- readRDS("WRotter.rds")
+Rotter.EFA <- data[1:300,11:33]
+efa.descriptives <- data[1:300,c(3,4,5,6,7,8)]
+Rotter.CFA <- data[301:478, 11:33]
+cfa.descriptives <- data[301:478,c(3,4,5,6,7,8)]
+WRotter.IRT <- data[,11:33]
+irt.descriptives <- data[,c(3,4,5,6,7,8)]
+```
+
+```{r missingdata, eval=FALSE, include=FALSE}
+
+missing.EFA <- aggr(Rotter.EFA, plot =T)
+missing.CFA<- aggr(Rotter.CFA, plot =T)
+missing.IRT <- aggr(WRotter.IRT, plot =T)
+
+```
+
+
+```{r Participants, eval=FALSE, include=FALSE}
+
+Descriptives.gender <- data %>% 
+  dplyr::select("Gender", "Age", "Education Years", "Social Stance","Marital Status", "sample")
+
+#renaming TRUE and FALSE from the IncludedInCFA to EFA and CFA for Descriptive Table
+Descriptives.gender$sample[Descriptives.gender$sample == "CFA" ] <-
+ "2. CFA Sample"
+Descriptives.gender$sample[Descriptives.gender$sample == "EFA" ] <- 
+ "1. EFA Sample"
+
+
+
+
+#Remove lavels for add_overall functions
+clear.labels <- function(x) {
+  if(is.list(x)) {
+    for(i in 1 : length(x)) class(x[[i]]) <- setdiff(class(x[[i]]), 'labelled') 
+    for(i in 1 : length(x)) attr(x[[i]],"label") <- NULL
+  }
+  else {
+    class(x) <- setdiff(class(x), "labelled")
+    attr(x, "label") <- NULL
+  }
+  return(x)
+}
+
+Descriptives.gender <- clear.labels(Descriptives.gender)
+
+
+
+
+
+desc_table <-  gtsummary::tbl_summary(Descriptives.gender,
+                                      by = sample,
+statistic = list(
+  all_continuous() ~ "{mean} ({sd})",
+  all_categorical() ~ "{n} ({p}%)"
+  ),digits = all_continuous() ~ 2,
+    missing = "no") %>%
+  add_overall() %>% 
+   add_p()%>%
+  as_flex_table()
+
+
+#as_kable_extra(desc_table , format = "latex",booktabs = T) -> desc_kable
+
+
+```
+
+```{r gender}
+Gender.count <- data.frame(table(data$Gender))
+Female <- Gender.count[1,2]
+Male <- Gender.count[2,2]
+```
+
+
+```{r tabdesctipgen, eval=FALSE, include=FALSE, results='asis'}
+
+# desc_kable %>% kable_styling(latex_options = c("scale_down")) 
+desc_table
+```
+
+A large group of 312 Bangladeshi adults participated in Study 1. Twelve participants were excluded due to incomplete data. For exploring initial factor structure, a sample of 250-300 is recommended [@RN1249; @RN1250] . Participants were recruited through email invitation following snowballing techniques. Out of 300 participants `r printnum((Gender.count[1,2]/300)*100)`% (`r Gender.count[1,2]`) were female ranging in age from 21 to 52 years (29.20±4.92) and `r printnum((Gender.count[2,2]/300)*100)`% (`r Gender.count[2,2]`) were male with an age range between 21 to 45 years (32.39±4.17). Average years of education for the females were 15.28±2.09 and for the males were 16.71±.0.94. 72% of the participants were married.
+
+## Material
+
+Rotter's Internal-External (I-E) scale consists of 23 item pairs in a forced-choice format with six additional filler pairs. Each pair contains one statement focusing on internal LoC and another focusing on external LoC. The score ranges from 0 to 23, with a higher score indicating higher external LoC. Internal consistency Kuder-Richardson coefficient was .69 in the original scale among the national stratified sample [@franklin1963youth].
+
+## Procedure
+
+### Data Collection
+
+Invitation emails were sent to the potential participants with appropriate explanatory statements. Once the participants voluntarily agreed to participate, their consent was recorded digitally. The data collection commenced from June 2021 to July 2021
+
+### Scale Translation
+
+We followed ICT [@RN1156] guidelines to translate and adapt the scale. A robust literature review was conducted to ensure the construct equivalence of "Locus of control" to ensure cross-cultural applicability. Based on the reviewed literature, it was agreed that the construct is equivalent in meaning across "Western" and "Bangladeshi" cultures. Two bilingual researchers (PhD in Psychology) natives in Bangla translated the original version (English) to Bangla. The two translated version was then judged and synthesized by the authors. Subsequently, two bilingual researchers (One PhD, one MS in psychology) back-translated the Bangla scale into English with no knowledge of the original work. The authors synthesized the two back-translations and compared it with the original scale, and made necessary amendments.
+
+### Content Validity: Expert Panel Review
+
+We gave the amended synthesized scale to 8 mental health professionals. They assessed the content validity of the scale (23 items) independently. They confirmed the relevance of the items using a 4-point Likert type scale (1: not at all relevant, 2: slightly relevant, 3: quite Relevant, 4: Highly Relevant). We estimated the item-level content validity (I-CVI) and scale-level content validity index (S-CVI). Any Item with an I-CVI score higher than 0.83 was retained [@article; @RN1290]. Two items were below the cut-off values thus readjusted and analyzed again.The S-CVI was .94, estimated using the average method and indicated satisfactory content validity [@article; @RN1290].
+
+### Analytic Strategies
+
+
+```{r NumericIdescriptives, include=F}
+des.tab <- tabledown::des.tab(Rotter.EFA)
+```
+
+We used R (version 4.1.0), including R-packages "Psych" [@R-base] and "ggplot2"[@R-ggplot2], for our analyses. Since Rotter's I-E scale used a dichotomous forced choice and both univariate normality [TABLE \@ref(tab:tabDes)] and multivariate normality assumptions are violated we performed the exploratory factor analysis using a tetrachoric correlation matrix [@RN1235]. We employed weighted least squares (WLS) as a factor extraction method to examine the latent construct structure. WLS is more robust towards violation of normality assumptions [@RN1255]. An orthogonal rotation technique: varimax was chosen following the literature investigating the latent structure of Rotter's I-E scale [@RN1252; @RN1253; @RN1254]. Before the EFA, necessary assumptions, including sample adequacy, quality of correlation matrix were assessed. As the commonalities for each item found in the previous studies were not \>.70 [@RN1252; @RN1253; @RN1254] , instead of relying on Kaiser criterion of eigenvalues greater than one, we relied on scree plot [@RN1177] . We supplemented the scree plot [@RN1225] with Horn's parallel analysis [@RN1223], minimum average partials method [@RN1224], and hull method [@RN1228]. We compared the root mean square of the residuals (RMSR) values obtained for the solutions to determine the best factor structure. $RMSR \le .08$ is preferred [@RN1231]. Additionally, to identify the simple structure we followed the following guidelines recommended by psychometricians (i) no factors with fewer than three items (ii) no factors with a factor loading \<0.3 (iii) no items with cross-loading greater than .3 across factors [@RN1233; @RN1234; @RN1235; @RN1256]
+
+## Result and Discussion
+
+```{r desfigperp, include=F}
+#EFA data
+library(gt)
+library(gtExtras)
+gt.data <- na.omit(Rotter.EFA)
+names(gt.data)[names(gt.data) == "item2"] <- "item02"
+names(gt.data)[names(gt.data) == "item3"] <- "item03"
+names(gt.data)[names(gt.data) == "item4"] <- "item04"
+names(gt.data)[names(gt.data) == "item5"] <- "item05"
+names(gt.data)[names(gt.data) == "item6"] <- "item06"
+names(gt.data)[names(gt.data) == "item7"] <- "item07"
+names(gt.data)[names(gt.data) == "item9"] <- "item09"
+
+#Creating long data
+gt.data.long <- as.data.frame(gather(gt.data, Items, value))
+gt.data.long$value <- as.numeric(as.character(gt.data.long$value))
+
+
+gt.data.tab <- gt.data.long %>% 
+  group_by(Items) %>% 
+  # calculate summary stats & create data for the histogram and density plot
+  dplyr::summarise(
+    nr = n(),
+    mean = mean(value, na.rm = TRUE),
+    med = median(value, na.rm = TRUE),
+    sd = sd(value, na.rm = TRUE),
+    hist_data = list(value),
+    dens_data = list(value),
+    .groups = "drop"
+  ) %>% 
+  gt() 
+
+
+gt.likert.Factor <-  as.data.frame(gt.data)
+
+
+#get the items name
+gt.items <- names(gt.likert.Factor ) 
+#Calculate percentage
+gt.percentage <- kutils::likert(gt.likert.Factor, vlist = gt.items ) 
+
+gt.percentage <- gt.percentage$table %>% 
+  as.data.frame(.)
+
+#data wrangling
+labels <- c("Score 0", "Score 1", "n")
+as.data.frame(labels)
+
+full.percentage <- cbind(labels,gt.percentage) #tables with labels  
+full.percentage<- t(full.percentage ) #transpose
+as.data.frame(full.percentage)
+full.percentage1 <- full.percentage[-1,-3] #removing 1st row and total column
+#full.percentage2 <- full.percentage1[, c(3, 4, 1, 2,5)]# rearranging
+as.data.frame(full.percentage1)
+
+
+colnames(full.percentage1) <- c("Internal Statement","External Statement")
+
+Items <- rownames(full.percentage1)
+as.data.frame(Items)
+full.percentage3 <- cbind(Items,full.percentage1)
+
+full.percentage3 <- full.percentage3[order(Items),] 
+full.percentage3 <- as.data.frame(full.percentage3[,-1]) %>% 
+  gt()
+
+
+gt.table <- gt.data.tab$'_data'
+gt.liket <- full.percentage3$"_data"
+
+
+Table <-  cbind( gt.table, gt.liket )%>% 
+  gt()%>% 
+  # histogram and density plots
+  gtExtras::gt_sparkline(
+    hist_data,
+    type = "histogram",
+    line_color = "black", 
+    fill_color = "#00A08799",
+    bw = 1,
+    same_limit = TRUE)%>%
+  gtExtras::gt_sparkline(
+    dens_data,
+    type = "density",
+    line_color = "black", 
+    fill_color = "#E64B3599",
+    bw = 0.75,
+    same_limit = TRUE
+  )%>%
+  # format decimals
+  fmt_number(columns = mean:sd, decimals = 1) %>%
+  # header
+  tab_header(
+    title = md("**Bangla Rotter's I-E Scale (n = 300)**"),
+    subtitle = md("Summary Descriptives")
+  ) %>% 
+  tab_footnote(
+    footnote = md("**Histogram**"),
+    locations = cells_column_labels(columns = hist_data)
+  ) %>%
+  tab_footnote(
+    footnote = md("**Density**"),
+    locations = cells_column_labels(columns = dens_data)
+  ) %>% 
+  #create groups of columns
+  tab_spanner(
+    label = "Items",
+    columns = Items
+  ) %>%
+  tab_spanner(
+    label = "Summary Statistics",
+    columns = nr:sd
+  ) %>%
+  tab_spanner(
+    label = "Graphics",
+    columns = hist_data:dens_data
+  )  %>%
+  # change column names to appear in the table
+  cols_label(
+    Items = ("Items"),
+    nr = ("n"),
+    mean = ("Mean"),
+    med = ("Median "),
+    sd = (("SD")),
+    hist_data = "Histogram",
+    dens_data = "Density"
+  ) %>%
+  
+  tab_spanner(
+    label = "Response Pattern",
+    columns = "Internal Statement":"External Statement"
+  ) %>%
+  # set alignment as per wish
+  cols_align(
+    align = "center",
+    columns = everything()
+  ) %>%
+  opt_align_table_header(align = "left") %>%
+  gtExtras::gt_plt_dot(
+    mean,
+    Items,
+    palette = "ggthemes::fivethirtyeight") %>%  
+  gtsave("Figures/600/descriptives.png",vwidth = 7000)
+```
+
+
+### Sampling Adequacy
+
+```{r}
+KMO <- KMO(Rotter.EFA) 
+```
+
+Sampling adequacy was investigated by Kaiser-Meyer-Olkin (KMO) measures of sampling adequacy [@RN1221]. The overall KMO vale for 23 items was `r printnum(KMO$MSA)` which was above the cutoff value of .50 indicating a mediocre sample [@RN1179].
+
+### Descriptive Statistics and Item Analysis
+
+```{r tabDes, results='asis'}
+apa_table(des.tab, caption = "Descriptive Statistics")
+```
+
+```{r include=FALSE}
+mardia <- mardia(Rotter.EFA, na.rm = T, plot =T)
+correlations <- tetrachoric(Rotter.EFA,smooth=TRUE)
+upper <- correlations$rho[upper.tri(correlations$rho, diag = F)]
+
+min.cor <- apa(min((upper)),2,F) #minimum cor.coefficient of the matrix
+max.cor <- apa(max((upper)),2,F) # max. correlation coefficient of the matrix
+
+bartlet <- cortest.bartlett(Rotter.EFA, n =300)
+
+BigR = sum(correlations$rho >= abs(.30) & correlations$rho < abs(1.0), na.rm =T)/2 
+totR = length(Rotter.EFA)*(length(Rotter.EFA)-1)/2
+print (BigR/totR)*100
+
+Item_analysis <- psych::alpha(Rotter.EFA)
+Item_analysis$item.stats$r.cor
+R.cor.sum <- summary(Item_analysis$item.stats$r.cor)
+
+```
+
+Table\@ref(tab:tabDes) presents univariate descriptive statistics for the 23 items. Most of the items are skewed with high kurtosis values.The Shapiro-Wilk test of normality [@RN1260] indicated all the items violated normality assumptions. Multivariate normality assumptions were investigated by Marida’s test [@RN1258]. Multivariate skew = `r printnum(mardia$b1p)` (p \<0.001) and multivariate kurtosis = `r printnum(mardia$b2p)` (p \<0.001) indicated the violation of multivariate normality assumptions. indicated the violation of multivariate normality assumptions. Due to the violation of univariate and multivariate normality assumption and the dichotomous force choice response option, tetrachoric correlations over Pearson’s correlations was chosen[@RN1235]. 
+
+Figure \@ref(fig:figCor)  and Supplementary Table 1 depict the inter-item correlation coefficients. Bartlett’s test of sphericity. Bartlett's test of sphericity [@RN1261], $\chi^2$ (`r bartlet$df`) = `r apa(bartlet$chisq, 2, T)`, p = `r apa(bartlet$p.value, 2, F)` indicated the correlations between items are adequate for the EFA. However only `r printnum((BigR/totR)*100)`% of the inter-item correlation coefficients were greater than .30 in the obtained matrix. The corrected item-total correlations ranged between `r apa(R.cor.sum[1],2,F)` to `r apa(R.cor.sum[6],2,F)`. Such low to moderate item-total correlation was also evident in the original scale ranging between .11 to .48 [@RN1259]. As such, all items are retained.
+
+### Exploratory Factor Analysis
+
+```{r eval=FALSE, include=FALSE}
+
+library(paran)
+library(FactoMineR)
+library(factoextra)
+library(EFA.MRFA)
+library(EGAnet)
+library(sna)
+
+correlations <- tetrachoric(Rotter.EFA,smooth=TRUE)
+
+EGA(correlations$rho, n= 300, plot.EGA = T, algorithm.args = list(steps = 4))
+
+ paran(correlations$rho, iterations=500, centile=0, quietly=FALSE,
+      status=TRUE, all=FALSE, cfa=FALSE, graph=TRUE,
+      color=TRUE, col=c("black","red","blue"),
+      lty=c(1,2,3), lwd=1, legend=TRUE, file="",
+      width=640, height=640, grdevice="png", seed=0, mat=NA, n=NA)
+
+psych::VSS(Rotter.EFA, rotate = "promax", fm = 'ml', n.obs =300 )
+
+
+
+scree(correlations$rho,factors=TRUE,pc=TRUE,main="Scree plot",
+      hline=NULL,add=F)
+
+
+pca = PCA(Rotter.EFA)
+
+
+fviz_eig(pca, addlabels = T, max.overlaps = Inf)
+
+
+
+eigen_decomp <- eigen(correlations$rho)
+round(eigen_decomp$values, 3)
+
+
+hullEFA(Rotter,extr = "ULS", index_hull = "CAF", display = TRUE, graph = TRUE, details = TRUE)
+```
+
+```{r include=FALSE}
+library(FactoMineR)
+library(factoextra)
+
+pca = PCA(Rotter.EFA)
+```
+
+```{r figScree, eval=FALSE, fig.cap="Scree Plot with percentage of variance explained", include=FALSE, results='asis'}
+fviz_screeplot(pca, addlabels = T, max.overlaps = Inf, ylim =c(0,15),  main = NULL)
+```
+
+
+
+```{r eval=FALSE, include=FALSE}
+correlations <- tetrachoric(gt.data,smooth=TRUE)
+qgraph::qgraph(correlations$rho, cut =.30, details =T, posCol = "green", negCol = "orangered3", 
+       labels = names(Rotter.EFA))
+
+corplot1 <- psych::corPlot(correlations$rho, diag =F, scale=T,
+               upper =F, numbers = T, cex.axis =.5, stars=T, cex=.8 )
+
+
+p.mat <- correlation::cor_to_p(correlations$rho, 300, method = "tetrachoric")
+
+corplot <- ggcorrplot::ggcorrplot(correlations$rho, p.mat=p.mat$p, insig = "pch", hc.order = FALSE, outline.col = "white", type = "lower", legend.title = "Correlation",sig.level = 0.05, pch.cex=1.8,
+                      # insig = "blank",
+           ggtheme = ggplot2::theme_minimal(),tl.srt = 90,colors = c("#E64B35FF", "white", "#3C5488FF") )+
+  theme( panel.grid.major = element_blank(),
+         axis.text.x = element_text(size = 8),
+         axis.text.y = element_text(size = 8),
+         panel.border = element_rect(color = "black",
+                                    fill = NA,
+                                    size = 1))
+
+
+
+   
+#p.mat <- cor_to_p(correlations$rho, 428, method = "polychoric")
+#to show pvalue in the fig add p.mat=p.mat
+ggsave("figures/300/corplot.png",corplot, width = 3.5, height = 3.5, dpi = 300, bg ="white")
+ggsave("figures/300/corplot.pdf",corplot, width = 3.5, height = 3.5, dpi = 300, bg ="white")
+
+ggsave("figures/600/corplot.png",corplot, width = 3.5, height = 3.5, dpi = 600, bg ="white")
+ggsave("figures/600/corplot.pdf",corplot, width = 3.5, height = 3.5, dpi = 600, bg ="white")
+
+cor.hits <- as.data.frame(reshape2::melt(upper))
+colnames(cor.hits) <- c("value")
+corr.histogram <- ggplot(cor.hits,aes(x=value)) + 
+  geom_histogram(binwidth=.06, col=I("black"),fill="#00A08799")+apatheme+
+  labs( y="", x = "Inter-item correlation")+scale_y_continuous(limits = c(0, 50), expand = expansion(mult = c(0, 0.1)))+scale_x_continuous(limits = c(-.22,.65), breaks =c(-.22,0, .30, .50, .65))
+
+ggsave("Figures/correlation_histogram.png", corr.histogram, width = 3, height = 6, dpi = 600, bg ="white")
+
+
+
+```
+
+(ref:figCor) Inter-item tetrachoric correlation coefficients for the 23-item Rotter I-E Scale. Inter-item correlation ranged between -.22 to .62. 15.42% correlations were higher than the absolute value of .30
+
+```{r figCor, out.height="150%",out.width="100%", fig.align= 'center', fig.cap='(ref:figCor)', results='asis', fig.align='center'}
+
+knitr::include_graphics('figures/600/corplot.png', dpi =600)
+
+```
+
+
+
+```{r MAP, include =F}
+
+#MAP
+map <- psych::VSS(gt.data, rotate = "varimax", fm = 'minres', n.obs =300 )
+map.map <- as.data.frame(map$map)
+colnames(map.map) <- "MAP Statistic"
+map.statistics <- map$vss.stats[,c(1,2,5,6,7,10,11)]
+full.map <- cbind(map.map,map.statistics)
+```
+
+```{r map-tab}
+
+papaja::apa_table(full.map, caption = "Minimum Average Partial (MAP) method of factor numder determination. MAP Statistics is the lowest in the 5th row indicating five factors are required.")
+```
+
+
+```{r, include = F}
+cor.mat <- correlations$rho
+cor.mat <- as.data.frame(cor.mat)
+```
+
+```{r results='asis'}
+apa_table(cor.mat,landscape = T )
+```
+
+
+
+```{r ParallelEFA, include=FALSE}
+
+# Parallel analysis
+Horn <- paran::paran(correlations$rho, iterations=500, centile=0, quietly=FALSE,
+           status=TRUE, all=FALSE, cfa=FALSE, graph=TRUE,
+           color=TRUE, col=c("black","red","blue"),
+           lty=c(1,2,3), lwd=1, legend=TRUE, 
+           width=640, height=640, grdevice=png, seed=0, mat=NA, n=NA)
+
+
+Adjusted.EV <- data.frame(Horn$AdjEv)
+Adjusted.EV$type = c('Adjusted Ev')
+Adjusted.EV$num = c(row.names(Adjusted.EV))
+Adjusted.EV$num = as.numeric(Adjusted.EV$num)
+colnames(Adjusted.EV) = c('eigenvalue', 'type', 'num')
+
+
+Random.EV <- data.frame(Horn$RndEv)
+Random.EV$type = c('Random EV')
+Random.EV$num = c(row.names(Random.EV))
+Random.EV$num = as.numeric(Random.EV$num)
+colnames(Random.EV) = c('eigenvalue', 'type', 'num')
+
+
+Unadjusted.EV <- data.frame(Horn$Ev)
+Unadjusted.EV$type = c('Unadjusted EV')
+Unadjusted.EV$num = c(row.names(Unadjusted.EV))
+Unadjusted.EV$num = as.numeric(Unadjusted.EV$num)
+colnames(Unadjusted.EV) = c('eigenvalue', 'type', 'num')
+
+
+
+parallel = ggplot(Adjusted.EV, aes(x=num, y=eigenvalue, shape=type, color=type)) +
+  #Add lines connecting data points
+  geom_line(colour ='#DC000099')+
+    #geom_line(data = Random.EV) +
+  #geom_line(data = Unadjusted.EV)+
+    #Add the data points.
+  geom_point(size=1.5,colour ='#3C5488FF')+
+  #geom_point(data = Random.EV, size=3)+
+  #geom_point(data = Unadjusted.EV, size=3)+
+  scale_y_continuous(name="Eigen Value", limits=c(0, 5), breaks=seq(0,5,1)) +
+   #Label the x-axis 'Factor Number', and ensure that it ranges from 1-max # of factors, increasing by one with each 'tick' mark.
+  scale_x_continuous(name='Factor Number (Parallel Analysis)', limits=c(0, 24),breaks=seq(0,24,4))+
+    #Add vertical line indicating parallel analysis suggested max # of factors to retain
+  geom_hline(yintercept=1, linetype = 'dashed') + apatheme +theme(,legend.position = "None")   + 
+  theme(axis.title.x = element_text(size = 10),
+        axis.title.y = element_text(size = 10))
+#text = element_text(size = 25)
+
+```
+
+```{r ScreePlot, include=FALSE}
+Scree <- scree(correlations$rho,factors=TRUE,pc=TRUE,main="(B)",
+      hline=NULL,add=F)
+
+
+FA.Scree <- data.frame(Scree$fv)
+FA.Scree$type = c('Factor Analysis')
+FA.Scree$num = c(row.names(FA.Scree))
+FA.Scree$num = as.numeric(FA.Scree$num)
+colnames(FA.Scree) = c('eigenvalue', 'type', 'num')
+
+PA.Scree <- data.frame(Scree$pcv)
+PA.Scree$type = c('Principal Component Analysis')
+PA.Scree$num = c(row.names(PA.Scree))
+PA.Scree$num = as.numeric(PA.Scree$num)
+colnames(PA.Scree) = c('eigenvalue', 'type', 'num')
+
+
+scree.plot <-ggplot(FA.Scree, aes(x=num, y=eigenvalue,color=type, shape=type))+
+   geom_line(colour ='#DC000099')+
+  #geom_line(data = PA.Scree)+ 
+  geom_point(size=1.5,colour ='#3C5488FF')+
+  #geom_point(data = PA.Scree, size=3)+
+  scale_y_continuous(name="Eigen Value", limits=c(0, 5), breaks=seq(0,5,1)) +
+  scale_x_continuous(name='Factor Number (Scree Plot)', limits=c(0, 12),breaks=seq(0,12,4))+
+  geom_hline(yintercept=1, linetype = 'dashed') + apatheme +theme(legend.position = "None") +  theme(axis.title.x = element_text(size = 10),
+        axis.title.y = element_text(size = 10))
+#text = element_text(size = 25
+
+```
+
+```{r HullEFA, include=FALSE}
+# HULL
+EFA.MRFA::hullEFA(Rotter.EFA,extr = "ULS", index_hull = "CAF", display = TRUE, graph = T,
+        details = TRUE)
+hull <- ggplot2::last_plot()
+Hull <- hull+ ggtitle(NULL)+xlab("Factor Number (Hull Method)")+ylab("CAF")+ aes(color = '#DC000099')+geom_point(color ='#3C5488FF',size =1)+
+  apatheme +theme(legend.position = "None") +scale_fill_identity()+  theme(axis.title.x = element_text(size = 10), axis.title.y = element_text(size = 10))
+
+```
+
+```{r FAperp, include=F}
+factor <- cowplot::plot_grid(parallel, scree.plot,Hull, labels = "AUTO",ncol=1, label_size = 15,align = "v", 
+                  # label_fontfamily = "Arial",
+                  label_fontface = "plain")
+ggsave("Figures/300/factors.png",factor, width =3.5, height = 7, dpi = 300)
+ggsave("Figures/300/factors.pdf",factor, width =4, height = 7, dpi = 300)
+
+
+ggsave("Figures/600/factors.png",factor, width =3.5, height = 7, dpi = 600)
+ggsave("Figures/600/factors.pdf",factor, width =3.5, height = 7, dpi = 600)
+```
+
+
+```{r facIdFig, out.height="100%", out.width="100%",fig.align='center', fig.cap='Factor Identification (A) Parallel analysis (B) Scree Plot (C) Hull Method',  warning=FALSE, results= 'asis'}
+
+knitr::include_graphics('Figures/600/factors.png', dpi =600)
+
+
+```
+
+Scree plot ( Fig\@ref(fig:facIdFig)) suggested a two-factor solution. In MAP method [@RN1224] the average squared off-diagonal values of the calculated partial correlation matrix are expected to be minimum when the correct number of factors are extracted. In our data set, this value reached the minimum after extracting the first factor. The more contemporary Hull method tries to find an optimal number of factors to balance model fit and the number of parameters [@RN1228]. This extraction method also supported a 1-factor model. Horn's parallel analysis [@RN1223]), like the Monte Carlo study, draws several sets of random data with the same number of participants as the original data set and compares the mean eigenvalues among the simulated and original data sets to retain optimal factors. Parallel analysis is also more immune to the normality assumptions violation[@RN1263]. In our data set parallel analysis with 500 iterations indicated 2 factor solution. As a result, we tested both one factor and two factor solutions.
+
+```{r tabfac, eval=FALSE, include=FALSE }
+ 
+Factors <- c( 2, 1, 1, 2, 2, 5, 9)
+factor.matrix <- matrix(Factors, nrow = 7, ncol = 1, byrow= T)
+colnames(factor.matrix) <- ("Factor/Component")
+rownames(factor.matrix) <- c( "Parallel Analysis", "MAP", "Hull (CAF, CFI, RMSEA)", "Minimum Variance",  "ScreePlot", "Network", "EigenValues")
+
+apa_table(factor.matrix,caption = "Identified Factors")
+```
+
+```{r include=FALSE}
+correlations <- tetrachoric(Rotter.EFA,smooth=TRUE)
+
+
+fa.2F.1 <- fa(r=correlations$rho, nfactors = 2, fm= "wls", rotate = "varimax",residuals = TRUE, SMC = TRUE, n.obs =300)
+print(fa.2F.1, cut = .3, digits = 3, sort = T)
+
+reduced.model.2F.1 <- dplyr::select(Rotter.EFA, -item22, -item6,-item29,-item25, -item9)
+correlations.redu.2F.1 <-  tetrachoric(reduced.model.2F.1)
+fa.2F.2 <- fa(r=correlations.redu.2F.1$rho, nfactors = 2, fm= "wls", rotate = "varimax",
+              residuals = TRUE, SMC = TRUE, n.obs =300)
+print(fa.2F.2, cut = .3, digits = 3, sort = TRUE)
+
+reduced.model.2F.2 <- dplyr::select(Rotter.EFA, -item22, -item6,-item29,-item25, -item9, -item12)
+
+correlations.redu.2F.2 <-  tetrachoric(reduced.model.2F.2)
+
+fa.2F.3 <- fa(r=correlations.redu.2F.2$rho, nfactors = 2, fm= "wls", rotate = "varimax",
+              residuals = TRUE, SMC = TRUE, n.obs =300)
+print(fa.2F.3, cut = .3, digits = 3, sort = TRUE)
+
+reduced.model.2F.3 <- dplyr::select(Rotter.EFA, -item22, -item6,-item29,-item25, -item9, -item12, -item3)
+
+correlations.redu.2F.3 <-  tetrachoric(reduced.model.2F.3)
+
+fa.2F.4 <- fa(r=correlations.redu.2F.3$rho, nfactors = 2, fm= "wls", rotate = "varimax",
+              residuals = TRUE, SMC = TRUE, n.obs =300)
+print(fa.2F.4, cut = .3, digits = 3, sort = TRUE)
+
+reduced.model.2F.4 <- dplyr::select(Rotter.EFA, -item22, -item6,-item29,-item25, -item9, -item12, -item3, -item17)
+
+correlations.redu.2F.4 <-  tetrachoric(reduced.model.2F.4)
+
+fa.2F.5 <- fa(r=correlations.redu.2F.4$rho, nfactors = 2, fm= "wls", rotate = "varimax",
+              residuals = TRUE, SMC = TRUE, n.obs =300)
+print(fa.2F.5, cut = .3, digits = 3, sort = TRUE)
+
+reduced.model.2F.5 <- dplyr::select(Rotter.EFA, -item22, -item6,-item29,-item25, -item9, -item12, -item3, -item17, -item23)
+
+correlations.redu.2F.5 <-  tetrachoric(reduced.model.2F.5)
+
+fa.2F.6 <- fa(r=correlations.redu.2F.5$rho, nfactors = 2, fm= "wls", rotate = "varimax",
+              residuals = TRUE, SMC = TRUE, n.obs =300)
+print(fa.2F.6, cut = .3, digits = 3, sort = TRUE)
+
+resd.2F.WLS =residuals(fa.2F.6, diag = FALSE, na.rm =T)
+hist(resd.2F.WLS, col ="red", main = "", xlab = "Residuals",ylim=c(0, 100))
+abline(h = 21, lwd = 2, lty = 2)
+abline(v =.1,lwd = 2, lty = 2)
+
+
+omega.two <- omega(reduced.model.2F.5, nfactors=3, fm="wls",n.iter=1,p=.05,poly=FALSE,key=NULL,  flip=TRUE,digits=2, title="Omega",sl=TRUE,labels=NULL,plot=TRUE,n.obs=NA,rotate="oblimin",Phi=NULL,option="equal",covar=FALSE)
+```
+
+
+```{r include=FALSE}
+rotter2 <- Rotter.EFA %>% 
+  dplyr::select(item7 ,item21,item26)
+
+psych::alpha(rotter2, check.keys = T)
+```
+
+```{r TabEFA2}
+FAc <-tabledown::fac.tab( fa.2F.6, .3)
+
+
+
+apa_table(FAc, caption = "Two Factor Solution")
+```
+
+
+```{r 3f-rejected, include=F}
+fa.3F.1 <- fa(r=correlations$rho, nfactors = 3, fm= "wls", rotate = "varimax",residuals = TRUE, SMC = TRUE, n.obs =300)
+print(fa.3F.1, cut = .3, digits = 3, sort = T)
+
+reduced.model.3F.1 <- dplyr::select(Rotter.EFA, -item2, -item6,-item29)
+correlations.redu.3F.1 <-  tetrachoric(reduced.model.3F.1)
+fa.3F.2 <- fa(r=correlations.redu.3F.1$rho, nfactors = 3, fm= "wls", rotate = "varimax",
+              residuals = TRUE, SMC = TRUE, n.obs =300)
+print(fa.3F.2, cut = .3, digits = 3, sort = TRUE)
+
+
+
+reduced.model.3F.2 <- dplyr::select(Rotter.EFA, -item2, -item6,-item29, -item25, -item26)
+correlations.redu.3F.2 <-  tetrachoric(reduced.model.3F.2)
+fa.3F.3 <- fa(r=correlations.redu.3F.2$rho, nfactors = 3, fm= "wls", rotate = "varimax",
+              residuals = TRUE, SMC = TRUE, n.obs =300)
+print(fa.3F.3, cut = .3, digits = 3, sort = TRUE)
+
+reduced.model.3F.3 <- dplyr::select(Rotter.EFA, -item2, -item6,-item29, -item25, -item26, -item18, -item9,-item4, -item5)
+correlations.redu.3F.3 <-  tetrachoric(reduced.model.3F.3)
+fa.3F.4 <- fa(r=correlations.redu.3F.3$rho, nfactors = 3, fm= "wls", rotate = "varimax",
+              residuals = TRUE, SMC = TRUE, n.obs =300)
+print(fa.3F.4, cut = .3, digits = 3, sort = TRUE)
+
+
+reduced.model.3F.4 <- dplyr::select(Rotter.EFA, -item2, -item6,-item29, -item25, -item26, -item18, -item9,-item4, -item5,
+                                    -item23, -item10)
+correlations.redu.3F.4 <-  tetrachoric(reduced.model.3F.4)
+fa.3F.5 <- fa(r=correlations.redu.3F.4$rho, nfactors = 3, fm= "wls", rotate = "varimax",
+              residuals = TRUE, SMC = TRUE, n.obs =300)
+print(fa.3F.5, cut = .3, digits = 3, sort = TRUE)
+
+
+
+```
+
+
+The initial two-factor solution with all 23 items showed a lack of fit in terms of RMSR value (RMSR =.11), presence of cross-loading items (item9 and item 25) and poor factor loading (\<.30) items (item6, item22, item29). After discarding these items, we ran another EFA with the remaining 18 items. This iteration of EFA also appeared as a misfit in terms of poor factor loading (Item12). Another five rounds of EFA were conducted with gradually identifying problematic items and discarding them from the model. Finally, a two-factor EFA solution with 14 items was accepted with RMSR = 0.08, no loading smaller than .30 and no cross-loading greater than .30. The first factor retained 9 items, and the second factor retained 5 items. The first factor explained only 20.5% of the total variance and the second factor explained only 9.6%. Such low explained variance by the factors were also reported in @RN1264 where they summarized the results of twenty explanatory factor analyses results on Rotter's I-E scale. It was observed that the explained variance by the 1st factor ranged between 7% to 20% and the 2nd factor ranges between 7-10%. The internal consistency of McDonald's omega coefficient for the first factor was satisfactory (Omega = .64). However, the internal consistency of the second factor (Omega = .39) and full scale (Omega = .63) indicated poor internal consistency [@RN1173].
+
+```{r include=FALSE}
+correlations <- tetrachoric(Rotter.EFA,smooth=TRUE)
+
+fa.1F.WLS.1 <- fa(r=correlations$rho, nfactors = 1, fm= "wls", rotate = "varimax",
+              residuals = TRUE, SMC = TRUE, n.obs =300)
+print(fa.1F.WLS.1, cut = .3, digits = 3, sort = TRUE)
+
+
+
+reduced.model.1F.WLS.1 <- dplyr::select(Rotter.EFA,-item7, -item22, -item20, -item29, -item17, -item26, -item3, -item6)
+
+correlations.redu.WLS.1 <-  tetrachoric(reduced.model.1F.WLS.1,smooth=TRUE)
+
+fa.1F.WLS.2 <- fa(r=correlations.redu.WLS.1$rho, nfactors = 1, fm= "wls", rotate = "varimax",
+              residuals = TRUE, SMC = TRUE, n.obs =300)
+
+print(fa.1F.WLS.2, cut = .3, digits = 3, sort = TRUE)
+
+reduced.model.1F.WLS.2 <- dplyr::select(Rotter.EFA,-item7, -item22, -item20, -item29, -item17, -item26, -item3, -item6, -item21)
+
+correlations.redu.WLS.2 <-  tetrachoric(reduced.model.1F.WLS.2,smooth=TRUE)
+
+fa.1F.WLS.3 <- fa(r=correlations.redu.WLS.2$rho, nfactors = 1, fm= "wls", rotate = "varimax",
+                  residuals = TRUE, SMC = TRUE, n.obs =300)
+
+print(fa.1F.WLS.3, cut = .3, digits = 3, sort = TRUE)
+
+
+
+reduced.model.1F.WLS.3 <- dplyr::select(Rotter.EFA,-item7, -item22, -item20, -item29, -item17, -item26, -item3,-item6, -item21, -item12, -item2)
+
+correlations.redu.WLS.3 <-  tetrachoric(reduced.model.1F.WLS.3,smooth=TRUE)
+
+fa.1F.WLS.4 <- fa(r=correlations.redu.WLS.3$rho, nfactors = 1, fm= "wls", rotate = "varimax",
+                  residuals = TRUE, SMC = TRUE, n.obs =300)
+
+print(fa.1F.WLS.4, cut = .3, digits = 3, sort = TRUE)
+
+resd.1F.WLS =residuals(fa.1F.WLS.4, diag = FALSE, na.rm =T)
+hist(resd.1F.WLS, col ="red", main = "", xlab = "Residuals" ,ylim=c(0, 100))
+abline(h = 10, lwd = 2, lty = 2)
+abline(v =.1,lwd = 2, lty = 2)
+
+
+omega.One <- omega(reduced.model.1F.WLS.3, nfactors=1, fm="wls",
+               n.iter=1,p=.05,poly=FALSE,key=NULL,  
+               flip=TRUE,digits=2, title="Omega",
+               sl=TRUE,labels=NULL,plot=TRUE,n.obs=NA,
+               rotate="oblimin",Phi=NULL,option="equal",covar=FALSE)
+```
+
+Next, we fit a one-factor solution, and after 4 rounds of identifying and excluding the problematic items, a simple structure with one factor was obtained with 12 items explaining 32% of the total variance. The RMSR value was close to the cut-off value (.09). The internal consistency coefficient Mcdonald's omega total was satisfactory (.70).
+
+The obtained one-factor solution retained all items (with additional three items: 4, 9 & 13) of the first factor obtained in the previous two-factor solution. These items stemmed from the beliefs on the importance of personal ability and effort versus external luck in achieving a desired personal goal. Such a factor in the latent structure of Rotter's I-E scale is supported in the literature [@RN1252; @RN1253; @RN1254]. Our one-factor solution contained all the items retained in the "personal control" factor found by @RN1252. However the "political control" factor [@RN1252; @RN1254] reflecting the beliefs on people's influence over political events was not evident in our sample. Items belonging to the second factor of the obtained two-factor model in our study were stemmed from the beliefs on the interpersonal relationship (item7, 20, 26) and misfortune (item21, item 2). This factor was less interpretable and showed low internal consistency (Omega =.39). Thus, we retained the one-factor model, exhibiting better reliability estimates and meaningful interpretation than the two-factor model.
+
+```{r TabEFA1}
+FAc <- fa.1F.WLS.4
+
+Factorloading <- cbind(FAc $loadings, FAc$communalities)
+colnames(Factorloading)= c("LOC", "Communalities")
+apa_table(unclass(Factorloading))
+```
+
+# Study 2 Confirmation of Factor Structure and Psychometric Properties of Bangla Rotter's I-E scale
+
+```{r desfig, include=F}
+#EFA data
+gt.cfa <- Rotter.CFA %>% 
+  dplyr::select(item18 , item25 ,item11 , item15 , item16 , item10 ,item9 , item23 , item13 , item5 , item28 , item4)
+
+
+gt.data <- na.omit(gt.cfa)
+names(gt.data)[names(gt.data) == "item4"] <- "item04"
+names(gt.data)[names(gt.data) == "item5"] <- "item05"
+names(gt.data)[names(gt.data) == "item9"] <- "item09"
+
+#Creating long data
+gt.data.long <- as.data.frame(gather(gt.data, Items, value))
+gt.data.long$value <- as.numeric(as.character(gt.data.long$value))
+
+
+gt.data.tab <- gt.data.long %>% 
+  group_by(Items) %>% 
+  # calculate summary stats & create data for the histogram and density plot
+  dplyr::summarise(
+    nr = n(),
+    mean = mean(value, na.rm = TRUE),
+    med = median(value, na.rm = TRUE),
+    sd = sd(value, na.rm = TRUE),
+    hist_data = list(value),
+    dens_data = list(value),
+    .groups = "drop"
+  ) %>% 
+  gt() 
+
+
+gt.likert.Factor <-  as.data.frame(gt.data)
+
+
+#get the items name
+gt.items <- names(gt.likert.Factor ) 
+#Calculate percentage
+gt.percentage <- kutils::likert(gt.likert.Factor, vlist = gt.items ) 
+
+gt.percentage <- gt.percentage$table %>% 
+  as.data.frame(.)
+
+#data wrangling
+labels <- c("Score 0", "Score 1", "n")
+as.data.frame(labels)
+
+full.percentage <- cbind(labels,gt.percentage) #tables with labels  
+full.percentage<- t(full.percentage ) #transpose
+as.data.frame(full.percentage)
+full.percentage1 <- full.percentage[-1,-3] #removing 1st row and total column
+#full.percentage2 <- full.percentage1[, c(3, 4, 1, 2,5)]# rearranging
+as.data.frame(full.percentage1)
+
+
+colnames(full.percentage1) <- c("Internal Statement","External Statement")
+
+Items <- rownames(full.percentage1)
+as.data.frame(Items)
+full.percentage3 <- cbind(Items,full.percentage1)
+
+full.percentage3 <- full.percentage3[order(Items),] 
+full.percentage3 <- as.data.frame(full.percentage3[,-1]) %>% 
+  gt()
+
+
+gt.table <- gt.data.tab$'_data'
+gt.liket <- full.percentage3$"_data"
+
+
+Table <-  cbind( gt.table, gt.liket )%>% 
+  gt()%>% 
+  # histogram and density plots
+  gtExtras::gt_sparkline(
+    hist_data,
+    type = "histogram",
+    line_color = "black", 
+    fill_color = "#00A08799",
+    bw = 1,
+    same_limit = TRUE)%>%
+  gtExtras::gt_sparkline(
+    dens_data,
+    type = "density",
+    line_color = "black", 
+    fill_color = "#E64B3599",
+    bw = 0.75,
+    same_limit = TRUE
+  )%>%
+  # format decimals
+  fmt_number(columns = mean:sd, decimals = 1) %>%
+  # header
+  tab_header(
+    title = md("**Bangla Rotter's I-E Scale (n = 178)**"),
+    subtitle = md("Summary Descriptives")
+  ) %>% 
+  tab_footnote(
+    footnote = md("**Histogram**"),
+    locations = cells_column_labels(columns = hist_data)
+  ) %>%
+  tab_footnote(
+    footnote = md("**Density**"),
+    locations = cells_column_labels(columns = dens_data)
+  ) %>% 
+  #create groups of columns
+  tab_spanner(
+    label = "Items",
+    columns = Items
+  ) %>%
+  tab_spanner(
+    label = "Summary Statistics",
+    columns = nr:sd
+  ) %>%
+  tab_spanner(
+    label = "Graphics",
+    columns = hist_data:dens_data
+  )  %>%
+  # change column names to appear in the table
+  cols_label(
+    Items = ("Items"),
+    nr = ("n"),
+    mean = ("Mean"),
+    med = ("Median "),
+    sd = (("SD")),
+    hist_data = "Histogram",
+    dens_data = "Density"
+  ) %>%
+  
+  tab_spanner(
+    label = "Response Pattern",
+    columns = "Internal Statement":"External Statement"
+  ) %>%
+  # set alignment as per wish
+  cols_align(
+    align = "center",
+    columns = everything()
+  ) %>%
+  opt_align_table_header(align = "left") %>%
+  gtExtras::gt_plt_dot(
+    mean,
+    Items,
+    palette = "ggthemes::fivethirtyeight") %>%  
+  gtsave("Figures/descriptives_cfa.png",vwidth = 7000)
+```
+
+
+
+This study had three objectives. First, to confirm the latent factor structure of Bangla Rotter's I-E scale obtained in the first study by confirmatory factor analysis. Second, to gather validity evidence for our adapted scale [@RN1266]. Our first study explored the content validity in terms of I-CVI and S-CVI indexes and found satisfactory content validity. Validity evidence for the internal structure would be drawn from the CFA analysis. To check the scale's convergent validity, we calculated the bivariate correlation among the scores of Rotter's I-E scale and Internal Control Index (ICI) [@RN1267] and two sub-scales of Big five inventory [@RN1278; @RN1279[@RN1288]] . Third, to gather more information on our adapted scale using the item response theory (IRT)..
+
+## Method
+
+### Participants
+
+A second group of 178 Bangladeshi adults participated in Study 2. They were recruited via email invitation following snowballing techniques. There was no missing or incomplete data. 73% of the participants was female, ranging in age from 21 to 53 (29.20±4.85) and 27% of the participants was male, ranging in age from 26 to 44 (33.30±3.82). 78 % of the participants are married. Average years of education for the males are 16.84±.37 and for the female are 15.14±2.14. For estimating the sample size for the confirmatory factor analysis we followed the N:q rule [@RN1268; @RN1269; @RN1270; @RN1271] where 10 participants per parameters is required to earn trustworthiness of the result. Our sample size exceeds the requirement.
+
+### Measures
+
+#### Bangla Rotter's I-E Scale
+
+We derived a one-factor solution of the Bangla Rotter's I-E scale by the EFA conducted in our study 1. The internal consistency coefficients for the one-factor model was satisfactory (omega = .70)
+
+#### Internal Control Index
+
+The ICI is a 28-items 5 point scale to measure a person's locus of control [@RN1267]. The items were translated into Bangla using the standard procedure of forward-backward translation and judgment of an expert panel. Internal consistency coefficient Mcdonald's omega obtained in our sample was .86 indicating satisfactory internal consistency.
+
+#### Big Five Inventory (BFI)
+
+Previous research has demonstrated the association of Locus of control with different personality factors. External locus of control is associated with high neuroticism [@HORNER1996] and openness to experience [@RN1280; @RN1280; @RN1281; @RN1282] . We decided me measure neuroticism and openness to experience by two sub scales of BFI [@RN1278; @RN1279]. We have used the adapted Bangla BFI [@RN1287]. The neuroticism sub scale measures the extent to which an indivudual is affectively unstable, anxious and worried[@HORNER1996].It has 8 items (3 reversed items). The openness subscale has 10 items (2 reversed items) and measures individual's susceptibility to aesthetics, ideas, values and flexibility[@costa1992normal]. Each item (except for the reversed items) was scored on a five point Likert scale ranging from 1 (completely disagree) to 5 (completely agree) Test-retest reliabilities of the Bengali version of BFI for neuroticism [r =.92, p \< 0.01] and openness [r = .87, p \< 0.01] was satisfactory [@RN1287].
+
+### Procedure
+
+Participants were invited to participate voluntarily in the online study. Once agreed, participants' consent was digitally recorded, and data collection commenced.
+
+### Results and Discussion
+
+
+```{r include=FALSE}
+
+Rotter.one <- "LOC =~ item18 + item25 +item11 + item15 + item16 + item10 +item9 + item23 + item13 + item5 + item28 + item4"
+
+Rotter.one.fit <- cfa(Rotter.one,  Rotter.CFA,  mimic = "Mplus",
+                     ordered = names(Rotter.CFA),estimator = "WLSMV")
+
+One.factor.sum <- summary(Rotter.one.fit, fit.measures =TRUE,standardized = TRUE, rsq =TRUE)
+
+One.factor.Cfa <- fitmeasures (Rotter.one.fit,c("gfi", "agfi", "nfi","rfi", 
+                              "cfi.scaled","tli.scaled",
+                              "rmsea", 
+                              "srmr","aic"))
+
+One.factor.reliability <- semTools::reliability(Rotter.one.fit)
+One.factor.reliability[5]
+modfit.Cor.one <- modindices(Rotter.one.fit, sort. = TRUE) 
+modfit.Cor.one[modfit.Cor.one$mi>3.84,]
+
+
+Rotter.one.2 <- "LOC =~ item18 + item25 +item11 + item15 + item16 + item10 +item9 + item13 + item5 + item28 + item4"
+
+Rotter.one.fit.2 <- cfa(Rotter.one.2,  Rotter.CFA,  mimic = "Mplus",
+                     ordered = names(Rotter.CFA),estimator = "WLSMV")
+
+One.factor.Cfa.mod.sum <- summary(Rotter.one.fit.2, fit.measures =TRUE,standardized = TRUE, rsq =TRUE)
+
+One.factor.Cfa.mod.fit <- fitmeasures (Rotter.one.fit.2,c("gfi", "agfi", "nfi","rfi", 
+                              "cfi.scaled","tli.scaled",
+                              "rmsea", 
+                              "srmr","aic"))
+
+One.factor.reliability.mod <- semTools::reliability(Rotter.one.fit.2)
+
+```
+
+We used the 'Lavaan'[@R-lavaan] package in Rstudio to conduct the categorical confirmatory factor analysis with robust weighted least square (WLSMV) estimator as our response data was dichotomous [@RN1231]. Commonly used Model fit benchmarks of @RN1162 focused on (i) the comparative fit index (CFI;) (ii) the Tucker Lewis index (TLI) (CFI/TLI, $goodfit \geq .95$, $acceptable fit\geq .90$) (ii) the root mean square error of approximation (RMSEA; close to .06 or below), (iii) the standardized root mean square (SRMR; close to .08 or below) to estimate the model fit. Additionally, the chi-square test is also used to estimate the absolute model fit. Table \@ref(tab:tabCfa) summarizes the fit indices of our fitted model. The fitted model failed to attain an absolute fit estimated by the chi-square test. It is necessary to keep in mind that the chi-square test is sensitive to sample size while estimating the model and not recommended to be used as the sole index of absolute model fit [@RN1231]. SRMR value was also higher than general guideline. It is evident from the work of [@RN1272] that for categorical data SRMR performs poorly. Subsequently we judged the model fit based on incremental and parsimony fit indices values. Incremental fit indices for the one factor model (CFI =`r apa(One.factor.Cfa[5],2,F)`, TLI = `r apa(One.factor.Cfa[6],2,F)`) and parsimony index (RMSEA = `r apa(One.factor.Cfa[7],2,F)`) were indicating acceptable fit. However, one item (item23) loaded poorly. By discarding the item one factor model attained best fit (CFI =`r apa(One.factor.Cfa.mod.fit[5],2,F)`, TLI = `r apa(One.factor.Cfa.mod.fit[6],2,F)`, RMSEA = `r apa(One.factor.Cfa.mod.fit[7],2,F)`). SRMR value (`r apa(One.factor.Cfa.mod.fit[8],2,F)`) was also close to the suggested guideline(.08) The internal consistency reliability coefficients McDonald's omega value for both models were satisfactory (.71 & .72, respectively). Fig\@ref(fig:figcfa) depicts both model.
+
+```{r tabCfa, results='asis'}
+CFa.matrix <- matrix("NA", nrow =2, ncol = 8)
+colnames(CFa.matrix) = c("Model", "Chi-Squre", "df", "CFI", "TLI", "RMSEA", "SRMR", "McDonald's Omega")
+CFa.matrix[1,] = c("One Factor Model", "83.84", "54", apa(One.factor.Cfa[5],2,F), apa(One.factor.Cfa[6],2,F), apa(One.factor.Cfa[7],2,F), apa(One.factor.Cfa[8],2,F), apa(One.factor.reliability[5],2,F) )
+
+
+CFa.matrix[2,] = c("One Factor Model Modified", "72.24", "53", apa(One.factor.Cfa.mod.fit[5],2,F), apa(One.factor.Cfa.mod.fit[6],2,F), apa(One.factor.Cfa.mod.fit[7],2,F), apa(One.factor.Cfa.mod.fit[8],2,F)
+                   ,apa(One.factor.reliability.mod[5],2,F))
+
+
+apa_table(CFa.matrix, caption = "Fit Indices Of CFA")
+
+```
+
+
+
+
+```{r figcfa, fig.cap = "(A) One Factor Model of Bangla Rotter's I-E Scale (12 Items), (B) One Factor Model (11 Items)", fig.show="hold",fig.ncol = 2, out.width="50%",  warning=FALSE}
+library(semPlot)
+
+# png(filename="Figures/600//CFAplot.png", 
+#     type="cairo",
+#     units="in", 
+#     width=6, 
+#     height=6, 
+#     pointsize=12, bg= "white", 
+#     res=1200)
+
+
+
+semPaths (Rotter.one.fit , 
+          what= "std",
+          #"hide", #(hides coefficeits)
+          #whatLabels = "std",
+          intercepts = F,
+          style ="OpenMx",
+          #residScale = 6,
+          theme = "colorblind",
+          nCharNodes = 0,
+          reorder =T,
+          rotation =2,
+          layout ="tree",
+          cardinal = T,
+          curvePivot =T,
+          sizeMan =6,#items length
+          sizeMan2 = 2,#items
+          sizeLat = 12,#factors
+          thresholds = FALSE,
+          equalizeManifests =F,
+          fade = FALSE,
+          edge.label.cex = .8,
+          #exoCov = T,
+          centerLevels = T,
+          #edge.color="black",
+          label.scale=T,
+          label.cex=1.2, #Font of factor and item name
+          residuals=T,
+           #exoVar=FALSE,
+          #fixedStyle=6, #Style of arrow (guide item)
+          #freeStyle=1#Style of arrow (other item), #XKCD = TRUE
+           
+          )
+
+semPaths (Rotter.one.fit.2 , 
+          what= "std",
+          #"hide", #(hides coefficeits)
+          #whatLabels = "std",
+          intercepts = F,
+          style ="OpenMx",
+          #residScale = 6,
+          theme = "colorblind",
+          nCharNodes = 0,
+          reorder =T,
+          rotation =2,
+          layout ="tree",
+          cardinal = T,
+          curvePivot =T,
+          sizeMan =6,#items length
+          sizeMan2 = 2,#items
+          sizeLat = 12,#factors
+          thresholds = FALSE,
+          equalizeManifests =F,
+          fade = FALSE,
+          edge.label.cex = .8,
+          #exoCov = T,
+          centerLevels = T,
+          #edge.color="black",
+          label.scale=T,
+          label.cex=1.2, #Font of factor and item name
+          residuals=T,
+           #exoVar=FALSE,
+          #fixedStyle=6, #Style of arrow (guide item)
+          #freeStyle=1#Style of arrow (other item), #XKCD = TRUE
+           
+          )
+
+# dev.off()
+
+
+```
+
+
+```{r eval=FALSE, include=FALSE}
+
+# png(filename="Figures/600//CFAplot2.png", 
+#     type="cairo", 
+#     units="in", 
+#     width=6, 
+#     height=6, 
+#     pointsize=12, bg= "white", 
+#     res=1200)
+
+semPaths (Rotter.one.fit.2 , 
+          what= "std",
+          #"hide", #(hides coefficeits)
+          #whatLabels = "std",
+          intercepts = F,
+          style ="OpenMx",
+          #residScale = 6,
+          theme = "colorblind",
+          nCharNodes = 0,
+          reorder =T,
+          rotation =2,
+          layout ="tree",
+          cardinal = T,
+          curvePivot =T,
+          sizeMan =6,#items length
+          sizeMan2 = 2,#items
+          sizeLat = 12,#factors
+          thresholds = FALSE,
+          equalizeManifests =F,
+          fade = FALSE,
+          edge.label.cex = .8,
+          #exoCov = T,
+          centerLevels = T,
+          #edge.color="black",
+          label.scale=T,
+          label.cex=1.2, #Font of factor and item name
+          residuals=T,
+           #exoVar=FALSE,
+          #fixedStyle=6, #Style of arrow (guide item)
+          #freeStyle=1#Style of arrow (other item), #XKCD = TRUE
+           
+          )
+# dev.off()
+```
+
+
+### The Validity of Bangla Rotter's I-E Scale
+
+We have gathered satisfactory content validity evidence of Rotter's I-E scale in our first study by I-CVI and S-CVI. Our second study gathered structural validity evidence by confirming the one-factor solution obtained in the EFA. Lastly, we gathered convergent validity evidence based on correlational analysis among the total score of ICI [@RN1267], neuroticism, openness to experience [@RN1287] and Bangla Rotter's I-E scale
+
+
+
+
+
+```{r include =F}
+library(MBESS)
+openness <- data %>% 
+  dplyr::select(O1:O10)
+
+omega1 <- psych::omega(openness,nfactors=1)
+mm <- ci.reliability(openness,type="omega")
+
+neuro <- data %>% 
+  dplyr::select(N1:N8)
+omega2 <- psych::omega(neuro,nfactors=1)
+```
+
+
+
+```{r include=FALSE}
+Validity_Rotter <-  data[301:478,]
+Validity_Rotter <- Validity_Rotter %>% 
+  rowwise() %>% 
+  mutate(Uni_Total = sum(item18, item25, item11, item15, item16, item10, item9, item13,  item5,  item28, item4))
+
+Validity.cor <- Validity_Rotter %>% 
+  dplyr::select(Uni_Total, Total_Neuro, Total_Opennes, DI_Total)
+data.frame(Validity.cor)
+colnames(Validity.cor) =c ("Rotter's I-E Scale", "Neuroticism", "Opennesss", "Internal Control Index")
+
+
+```
+
+
+
+```{r correlationfunc}
+glrstab<- function(x, export=FALSE) {
+ 
+ r <-corr.test(x)$r	#taking just the correlation matrix; no N, or p
+ p <-corr.test(x)$p	#taking the p*s
+ 
+#define notions for significance levels
+ mystars <- ifelse(p < .001, "**"
+                   , ifelse(p < .01, "**"
+                            , ifelse(p < .05, "*"
+                                     , ifelse(p < .10, "+", " "))))
+ 
+ #round r, define new matrix Rnew with the correlations from rnd and paste mystars
+ rnd  <- papaja::printnum(r, gt1 = FALSE, digits = 2)  #round, drop leading 0 - Thanks CRSH!								                     
+ Rnew <- matrix(paste(rnd, mystars, sep=""), ncol=ncol(rnd)) 
+ 
+  #remove 1.0 correlations from diagonal  and set the strings
+ diag(Rnew) <- ''		
+ Rnew[upper.tri(Rnew)] <- ''								                	
+ 
+ rownames(Rnew) <- paste(1:ncol(rnd), colnames(rnd), sep=" ")         #define number and name
+ colnames(Rnew) <- paste(1:ncol(rnd), "", sep="") 			       #define number
+ 
+#fun-part: we trim the top half 
+ Rnew[upper.tri(Rnew)] <- ''			
+ Rnew
+ 
+ #Rnew <- cbind(round(describe(x)[,3:4],2), Rnew)		     #describe x, M sD - put them in the matrix
+ #colnames(Rnew)[1:2] <- c("M","SD")					      		#Beschriftung der neuen Spalten
+ Rnew <- Rnew[,1:(ncol(Rnew)-1)]							        	#delete the last column (ugly)
+ 
+ #export to clipboard
+ 
+   if (export==TRUE){
+   result<-write.table(Rnew
+                       , "clipboard"
+                       , sep=";"
+                       , row.names=FALSE)
+ }
+ else result <- Rnew
+ return(result)
+ 
+}
+
+```
+
+
+```{r}
+Cor <-glrstab(Validity.cor) #the function in action!
+
+```
+
+```{r tabvalidity, include=FALSE, results='asis'}
+apa_table(Cor, escape  = FALSE
+                , caption = "Correlation matrix of the main variables"
+                , note    = "**p < .001")
+```
+
+Table\@ref(tab:tabvalidity) summarized the correlation coefficients. Bangla Rotter's I-E scale were significantly positively correlated with neuroticism, r = .21, p\<0.01. Such a significant positive correlation was also reported in @HORNER1996, r = 0.33, p\<.001. Internal control index (ICI) showed a significant negative correlation, r = -.22, p\<.01. @RN1267 also reported such correlation, r = -.39, p\<.01 between the ICI and "personal control" factor of @RN1252. Openness to experience also showed a significant negative correlation with Bangla Rotter's I-E scale, r = -.22, p \<.001. @rodrigues2018relationship also reported such significant negative correlation of between LoC and openness to experience (r= -.22, p \<0.01)
+
+### IRT Analysis
+
+```{r samplesizeIRT, eval=FALSE, message=FALSE, warning=FALSE, include=FALSE, results='hide', width=60}
+m <-  11 # item number
+n <- c(50, 75, 100, 150, 200, 300, 350) # sample size
+design <- as.data.frame(n)
+set.seed(222)
+poppars <- rbind(alpha = round(rlnorm(m, 0, 0.25), 2),
+d = round(rnorm(m), 2))
+
+irtGenerate <- function(condition, fixed_objects = FALSE) {
+n <- condition$n
+a <- fixed_objects['alpha', ]
+d <- fixed_objects['d', ]
+dat <- simdata(a, d, n, itemtype = '2PL')
+return(dat)
+}
+
+irtAnalyze <- function(condition, dat, fixed_objects = NULL) {
+mod <- mirt(dat, 1, itemtype = '2PL', verbose = FALSE)
+simpars <- coef(mod, simplify = TRUE, digits = Inf)$items
+irtpars <- c(a = simpars[,1], d = simpars[,2])
+return(irtpars)
+}
+
+irtSummarize <- function(condition, results,
+fixed_objects = NULL) {
+apop <- fixed_objects['alpha', ]
+dpop <- fixed_objects['d', ]
+simrmse <- RMSE(results, c(apop, dpop))
+out <- c(RMSE = simrmse)
+return(out)
+}
+
+set.seed(222)
+simres <- runSimulation(design, replications = 1,
+parallel = TRUE, generate = irtGenerate,
+analyse = irtAnalyze, summarise = irtSummarize,
+packages = c('mirt'), fixed_objects = poppars)
+simres
+
+
+colind <- grep(".a.", colnames(simres))
+sima <- as.data.frame(simres[, colind])
+nvec <- as.numeric(simres$n)
+
+meanRMSE <- rowMeans(sima)
+names(meanRMSE) <- n
+round(meanRMSE, 2)
+matplot(nvec, log(sima), type = "l", col = 1, lty = 1,
+ylab = "log(RMSE)", xlab = "sample size",
+main = "2-PL Monte Carlo", xaxt = "n")
+axis(1, at = nvec)
+```
+
+To gather more information on our retained one-factor solution, we sought Item Response Theory (IRT). IRT complements the conventional classical test theory-based analysis by gathering information on item discrimination and item difficulty. IRT judges an item's quality by providing item information in the light of participants' trait level ($\theta$). We gathered evidence on item quality as well as item fit, person fit and model by fitting a two-parameter logistic model (2PL) model to the combined EFA sample and CFA sample (n =532) in RStudio with the "mirt" package [@R-mirt]. We did a Monte Carlo simulation using "SimDesign" package [@R-SimDesign] with sample sizes varying from 50-350 and calculated average root mean squared error(RMSE) to estimate the optimal sample size for the 2PL model with 11 items. The RMSE became stable for n = 200 to 300 (RMSE ranging between .25-.32). Our combined sample size was larger than the estimated sample size for stability.
+
+```{r include=FALSE}
+WRotter.IRT <- data[,11:33]
+
+Rotter.one.IRT <- WRotter.IRT %>% 
+  dplyr::select(item18, item25, item11, item15, item16, item10, item9, item13,  item5,  item28, item4)
+
+
+unidimensional_fit <- mirt(Rotter.one.IRT, model = 1, itemtype = '2PL', SE = TRUE, Se.type = 'MHRM',technical = list(NCYCLES = 10000))
+
+unidim_fit_indices <- M2(unidimensional_fit)
+
+
+unidimensional_itemfit <- itemfit(unidimensional_fit,
+                                  fit_stats = c("S_X2", "G2","Zh", "infit"),
+                                  impute=10)
+
+unidimensional_params <- coef(unidimensional_fit, IRTpars = TRUE, simplify = TRUE, rawug = FALSE) 
+
+unidimensional_items <- data.frame(unidimensional_params$items)
+
+unidimensional_se <- coef(unidimensional_fit, printSE = TRUE)
+
+
+
+unidiemsional.laten_personality <- as.vector(fscores(unidimensional_fit, method = "EAP",
+                                           full.scores = TRUE, 
+                                           full.scores.SE = F))
+
+
+
+Rotter.one_total <- Rotter.one.IRT %>% 
+  rowwise() %>% 
+  mutate(Total = sum(item18, item25, item11, item15, item16, item10, item9,  item13,  item5,  item28, item4))
+
+
+Ability.unidiemsionality <- data.frame(Rawscore = Rotter.one_total$Total,
+                      Theta = unidiemsional.laten_personality )
+
+
+ggplot(Ability.unidiemsionality, aes(x =Theta, y =Rawscore)) +
+  geom_point() +
+  geom_smooth(method='lm', se =TRUE, formula= y~x,colour = "red")+
+  xlim(-2,2) +
+  ylim(0,15)
+
+library(corx)
+Correlation.uni <- Ability.unidiemsionality %>% 
+corx(triangle = "lower",
+       stars = c(0.05, 0.01, 0.001),
+       describe = c(`$M$` = mean, `$SD$` = sd))
+
+papaja::apa_table(Correlation.uni$apa, 
+          caption = "Construct Validity",
+          note = "* p < 0.05; ** p < 0.01; *** p < 0.001",
+          escape = TRUE)
+
+
+```
+
+It required 16 iterations (Log-likelihood -3152.126) for the 2PL model to converge. Item fit statistics signed chi-square test (S-X2)[@RN1285; @RN1286] indicated all items were a good fit. Model fit statistics estimated from the model indicated a best fit for the the 2PL model, M2 = `r apa(unidim_fit_indices$M2,2,T)`, df = `r unidim_fit_indices$df`, p= `r apa(unidim_fit_indices$p,2,F)`, RMSEA = `r apa(unidim_fit_indices$RMSEA,2,F)`[`r apa(unidim_fit_indices$RMSEA_5,2,F)` - `r apa(unidim_fit_indices$RMSEA_95,2,F)`], CFI = `r apa(unidim_fit_indices$CFI,2,F)`, TLI = `r apa(unidim_fit_indices$TLI,2,F)`.
+
+```{r UnidimensionalPersonfit, message=FALSE, warning=FALSE, include=FALSE}
+unidimensional.personfit <- personfit(unidimensional_fit) 
+
+unidimensional.personfit_model_misfits <- subset(unidimensional.personfit, Zh < -2)
+rownames(unidimensional.personfit_model_misfits)
+nrow(unidimensional.personfit_model_misfits)
+personfit <- ggplot(unidimensional.personfit, aes(x=Zh)) + geom_histogram(binwidth=.5,col=I("black"),fill="#00A08799")+geom_vline(xintercept = -2)+
+  labs( y="Number of Participants", x = "Zh Statistics")+apatheme
+ggsave("Figures/300/personfit.png",personfit, width = 3.5, height = 3.5, dpi = 300, bg = "white")
+ggsave("Figures/300/personfit.pdf",personfit, width = 3.5, height = 3.5, dpi = 300, bg = "white")
+
+ggsave("Figures/600/personfit.png",personfit, width = 3.5, height = 3.5, dpi = 600, bg = "white")
+ggsave("Figures/600/personfit.pdf",personfit, width = 3.5, height = 3.5, dpi = 600, bg = "white")
+
+```
+
+```{r figfmisfit, fig.cap= "Distribution of the Zh statistic of 2PL model" }
+knitr::include_graphics('Figures/600/personfit.png', dpi =600)
+```
+
+Person fit indicates the validity and meaningfulness of the fitted model at the participants latent trait level [@RN1274]. We estimated the person fit statistics using standardized fit index Zh statistics [@drasgow1985appropriateness]. Zh \< -2 should be considered as a misfit. Fig\@ref(fig:figfmisfit) indicates that Zh is larger than -2 for most participants, suggesting a good fit of the selected IRT model.
+
+```{r tabIRT, results='asis'}
+IRT.Description <- cbind(unidimensional_itemfit$item, apa(unidimensional_items$a,2,T), apa(unidimensional_items$b,2,T),apa(unidimensional_itemfit$S_X2,2,T), apa(unidimensional_itemfit$df.S_X2,2,T), apa(unidimensional_itemfit$p.S_X2,2,F), apa(unidimensional_itemfit$outfit,2,T), apa(unidimensional_itemfit$infit,2,T))
+colnames(IRT.Description) = c("Items", "Discrimination","Difficulty", "S-X2", "df", "p", "outfit", "infit" )
+apa_table(IRT.Description,landscape = F, caption = "IRT Description")
+```
+
+We categorize the item discrimination in table\@ref(tab:tabIRT) using the following criteria of @RN1275, none = 0; very low =0.01 to 0.34; low = 0.35 to 0.64; moderate = 0.65 to 1.34 ; high = 1.35 to 1.69; very high \>1.70. Among the 11 items, 6 items showed moderate discrimination and one item showed high discrimination (item16). Three items (item 18, 25 & 11) had very high discrimination and one item (item 4) had low discrimination. All items were in the suggested guidelines of item discrimination parameter: 0.5$\le$ Item Discrimination $\le$ 2.0 (except items 18 & 4), and the item difficulty parameters: -3.0 $\le$ Item Difficult$\le$ 3.0 [@RN1275]. The relationship between participants' latent traits and the probability of responding to the preferred response option for the items is shown by the item characteristics curve (ICC) (Figure\@ref(fig:IIC)). For an easy item to have a probability of .50 a latent trait level $\theta$ = -1 is required for easy items, $\theta$ = 0 is required for moderate items and $\theta$ = 1 is required for hard items [@Desjardins]. Examination of the ICCs made it evident that our adapted scale contained all three types of items with item difficulty parameters ranging from -1.06 to 2.88, reflecting a sizable range of underlying locus of control trait.
+
+```{r irt-plots,  warning=FALSE}
+
+pacman::p_load(reshape,ggsci, ggrepel)
+
+#Test-infor curve
+tic <- tabledown::ggtestinfo(Rotter.one.IRT, unidimensional_fit)+apatheme+geom_area()+aes(fill =  "#E64B3599")+theme(legend.position = "none")+
+scale_fill_identity()+xlab(expression(theta))+ylab(expression(I(theta)))
+
+# +geom_vline(xintercept = 0, linetype="dashed")
+
+tic0 <-  tabledown::ggtestinfo(Rotter.one.IRT, unidimensional_fit)+apatheme+geom_area()+aes(fill =  "#E64B3599")
+tic2 <- plotly::ggplotly(tic0)
+# ggsave("Figures/TIC.png",tic, width = 8, height = 6, dpi = 1200, bg = "white")
+
+##Item Extraction
+Theta <- matrix(seq(-6,6, by = .1))
+item18 <- extract.item(unidimensional_fit, 1)
+item25 <- extract.item(unidimensional_fit, 2)
+item11 <- extract.item(unidimensional_fit, 3)
+item15 <- extract.item(unidimensional_fit, 4)
+item16 <- extract.item(unidimensional_fit, 5)
+item10 <- extract.item(unidimensional_fit, 6)
+item09 <- extract.item(unidimensional_fit, 7)
+item13 <- extract.item(unidimensional_fit, 8)
+item05 <- extract.item(unidimensional_fit, 9)
+item28 <- extract.item(unidimensional_fit, 10)
+item04 <- extract.item(unidimensional_fit, 11)
+
+##Item Info
+
+item18 <- iteminfo(item18, Theta)
+item25 <- iteminfo(item25, Theta)
+item11 <- iteminfo(item11, Theta)
+item15 <- iteminfo(item15, Theta)
+item16 <- iteminfo(item16, Theta)
+item10 <- iteminfo(item10, Theta)
+item09 <- iteminfo(item09, Theta)
+item13 <- iteminfo(item13, Theta)
+item05 <- iteminfo(item05, Theta)
+item28 <- iteminfo(item28, Theta)
+item04 <- iteminfo(item04, Theta)
+
+
+#Data frame
+
+item.info.data <- as.data.frame(cbind(item18,                                              item25,item11, item15, item16, item10, item09, item13, item05, item28, item04))
+
+
+item.info.data.long <- melt(item.info.data)
+item.info.data.2 <- data.frame(Theta=seq(-6,6, by = .1), item.info.data.long)
+
+#Item information curve
+ifc <- ggplot(item.info.data.2,aes(Theta,value,col=variable, label = variable))+geom_line()+apatheme+
+  ggtitle("Item Information Plot")+theme(legend.position = "none")+
+  facet_wrap(~variable)+theme(strip.text.x = element_text(size = 15))+geom_area()+ scale_color_ucscgb()+aes(fill = as.factor(variable))+
+  scale_y_continuous(breaks=c(0,.5,1,1.5), limits = c(0, 1.5))+
+  xlab(expression(theta)) + 
+  ylab(expression(I(theta)))
+
+ggsave("Figures/300/ifc.png",ifc, width = 7, height = 8, dpi = 300, bg = "white")
+ggsave("Figures/300/ifc.pdf",ifc, width = 7, height = 8, dpi = 300, bg = "white")
+
+ggsave("Figures/600/ifc.png",ifc, width = 7, height = 8, dpi = 600, bg = "white")
+ggsave("Figures/600/ifc.pdf",ifc, width = 7, height = 8, dpi = 600, bg = "white")
+
+
+#plot(unidimensional_fit, type = "trace", facet =F, main = "(A)") #item cha. curve
+#plot(unidimensional_fit, type = "infoSE", main = "(B)") #testinvo
+#plot(unidimensional_fit, type = "infotrace", main = "(C)") #iteminfo
+ggplot(Ability.unidiemsionality, aes(x =Theta, y =Rawscore )) +
+  geom_point() +
+  geom_smooth(method='lm', se =TRUE, formula= y~x,colour = "blue")+
+  xlim(-2,2) +
+  ylim(0,15)+
+  labs(x = "Theta",
+       y = "Raw Score") + 
+  labs(title = "(D)")+
+    theme_apa()
+```
+
+
+```{r icc}
+
+pacman::p_load(reshape,ggsci, ggrepel)
+# Extract all items 
+# Compute the probability trace lines
+# Put into a list
+traceline <- NULL
+for(i in 1:length(Rotter.one.IRT)){
+extr.2 <- extract.item(unidimensional_fit, i)
+Theta <- matrix(seq(-6,6, by = .1))
+traceline[[i]] <- probtrace(extr.2, Theta)
+}
+
+# rename list
+names(traceline) <- c("item18", "item25","item11", "item15", "item16", "item10", "item09","item13", "item05", "item28", "item04")
+
+# rbind traceline
+traceline.df <- do.call(rbind, traceline)
+
+# create item names length based on length of theta provided
+item <- rep(names(traceline),each=length(Theta))
+
+# put them all together into a dataframe
+l.format <- cbind.data.frame(Theta, item, traceline.df)
+
+l.format$item<-as.factor(l.format$item)
+aux<-l.format %>%
+  group_by(item) %>%
+  slice(which.min(abs(P.1-0.5))) # We are only using the P.1 column (dichotomous)
+
+aux<-aux[order(aux$Theta),]
+ord<-as.integer(aux$item)
+l.format$item = factor(l.format$item,levels(l.format$item)[ord])
+
+# plot chart
+library(directlabels)
+icc <- ggplot(l.format, aes(Theta, P.1, colour = item)) + 
+  geom_line() + 
+  ggtitle('') + 
+  xlab(expression(theta)) + 
+  ylab(expression(P(theta))) + 
+  geom_hline(aes(yintercept = 0.5))+apatheme+ scale_color_ucscgb()+theme(legend.position="top",legend.box = "horizontal")+
+  theme(legend.background = element_rect(
+                                  size=0.5, linetype="solid", 
+                                  colour ="darkblue"))+
+  scale_x_discrete(expand=c(0, 1)) 
+# ggsave("Figures/icc.png",icc, width = 8, height = 8, dpi = 1200, bg = "white")
+
+
+
+
+
+# rename list
+names(traceline) <- c("18", "25","11", "15", "16", "10", "09","13", "05", "28", "04")
+
+# rbind traceline
+traceline.df <- do.call(rbind, traceline)
+
+# create item names length based on length of theta provided
+item <- rep(names(traceline),each=length(Theta))
+
+# put them all together into a dataframe
+l.format <- cbind.data.frame(Theta, item, traceline.df)
+
+l.format$item<-as.factor(l.format$item)
+aux<-l.format %>%
+  group_by(item) %>%
+  slice(which.min(abs(P.1-0.5))) # We are only using the P.1 column (dichotomous)
+
+aux<-aux[order(aux$Theta),]
+ord<-as.integer(aux$item)
+l.format$item = factor(l.format$item,levels(l.format$item)[ord])
+
+
+
+
+icc2 <- ggplot(l.format, aes(Theta, P.1, colour = item)) + 
+  geom_line(show.legend = FALSE) + 
+  ggtitle('') + 
+  xlab(expression(theta)) + 
+  ylab(expression(P(theta))) + 
+  geom_hline(aes(yintercept = 0.5))+apatheme+ scale_color_ucscgb()+
+  # theme(legend.background = element_rect(
+  #                                 size=0.5, linetype="solid", 
+  #                                 colour ="darkblue"),
+  #       axis.text.x = element_text(size = 15),
+  #       axis.text.y = element_text(size = 15))+
+  # scale_x_discrete(expand=c(0, 1)) +
+geom_dl(aes(label = item), method = "angled.boxes", cex = 0.2)
+
+
+# ggsave("Figures/icc2.png",icc2, width = 8, height = 6, dpi = 1200, bg = "white")
+
+
+
+```
+
+
+```{r, include =F}
+icctic <- cowplot::plot_grid(icc2, tic, 
+                   labels = "AUTO",
+                   ncol=1, 
+                  align = "h", 
+                  # label_fontfamily = "Arial",
+                  label_fontface = "plain")
+
+ggsave("Figures/300/icc_tic.png",icctic, width = 7, height = 7, dpi = 300)
+ggsave("Figures/300/icc_tic.pdf",icctic, width = 7, height = 7, dpi = 300)
+
+ggsave("Figures/600/icc_tic.png",icctic, width = 7, height = 7, dpi = 600)
+ggsave("Figures/600/icc_tic.pdf",icctic, width = 7, height = 7, dpi = 600)
+
+```
+
+```{r, include =F}
+reliability <- plot(unidimensional_fit, type = 'rxx', theta_lim = c(-6, 6), 
+      main="" )
+marginal.rel <- marginal_rxx(unidimensional_fit)
+
+```
+
+
+Item information curve (IIC) and test information curve (TIC) indicate the amount of information an item and the full scale carry along the latent trait continuum, respectively (Figure\@ref(fig:IIC)). Examination of the IICs' revealed that item 18 carried the highest information between $\theta$ level -2 to 1. Item 4 was not very informative with almost flat IIC along the trait. Item 11, 13, 15, and 25 have a little information bump centered on the measured trait ($\theta$). Item 5, 9, 10, 16 and 28 have a little bump of information located on the external locus of the control area. Test information curve (\@ref(fig:figTIC).  also indicated the test had the least measurement error between $\theta$ = -1 and $\theta$ = 0. The amount of information changed rather steadily with the change of $\theta$ across the continuum. Thus we conferred the ability was estimated with precision near the center of the locus of control scale [@RN1275] with a peak in the ranges of $\theta$ = -1 and $\theta$ = 0, which is sufficient to discriminate between external locus of control and internal locus of control. This Adequacy is reflected by the correlation coefficient of the estimated $\theta$ and the obtained score in the Rotter's I-E scale, r =.98, p \< .01 (\@ref(fig:figICC).
+
+
+```{r FigTIC, fig.cap= "Item Information Curves of Bangla Rotter’s I-E Scale. Item 18 carried the highest level of information across the theta continuum and item 04 carried the lowest information"}
+  knitr::include_graphics('Figures/600/ifc.png', dpi =600)
+
+```
+
+
+```{r figICC, fig.cap= "(A) Item Characteristic Curves (ICC) of the 11 items of the Bangla Rotter I-E scale. ICC indicates Bangla Rotter I-E scale is composed of items with easy, moderate and hard items. (B) Test information Curve. The peak of the curve centered near the center of the continuum between the theta range -1 to 0." }
+knitr::include_graphics('Figures/600/icc_tic.png', dpi =600)
+```
+
+# General Discussion
+
+We followed the ICT [@RN1156] guidelines to culturally adapt the Rotter's I-E scale and psychometrically evaluate it by gathering evidence of validity (content, structural, and convergent)[@RN1266] and estimating reliability (Internal consistency). We also gathered information about item quality using item response theory.
+
+We confirmed the construct equivalence of locus of control in both the western and eastern cultures by a robust literature review. Then we started with the initial 23 (except the six filler items) original items and translated them into Bangla following the standard forward-backward translation procedure (Study 1). The content validity of the initial synthesized scale was assessed by I-CVI and S-CVI (average) [@article; @RN1290] from the evaluation of 8 mental health experts. The final I-CVI scores for each item were higher than 0.83 and S-CVI was .94 indicating satisfactory content validity [@article; @RN1290]. We administered the scale to a large sample (300) of elementary school teachers to explore the latent construct structure. In exploratory factor analysis, we obtain two solutions: a one-factor solution with 12 items and a two-factor solution with 14 items. However, only the one-factor solution and the first factor of the two-factor solution yielded acceptable internal consistency (McDonald's omega .70 &.64 respectively)[@RN1173]. Both of these factors contained similar items stemming from the beliefs regarding personal control over desired goal attainment. The emergence of such a factor is in line with the previous research [@RN1252; @RN1254]. This emerged factor described the respondent's preference to assign greater or lesser value to personal ability than to luck in realizing the desired goal. Each of these items posed statements (e.g., In the long run, people get the respect they deserve in this world/Unfortunately, an individual's worth often passes unrecognized no matter how hard he tries) which would affirm the respondents' disposition on their fate vs. to their ability and hard work. The second factor of the two-factor solution contained 5 items stemming from beliefs on interpersonal relationships and control over misfortune. However, this factor was less interpretable in terms of a common theme and showed a poor reliability estimate ( McDonald's Omega =.39). As a result, we accepted the one-factor solution.
+
+A CFA on a separate sample (Study 2) indicated the best fit of one-factor solution (CFI =.97, TLI = .96, RMSEA = .04).The internal consistency of the scale measured by McDonald's omega was also above the suggested criteria for both EFA and CFA samples (McDonald's Omega =.70). We gathered validity evidence by estimating correlations between our scale and neuroticism, openness to experience [@RN1287] and internal control index [@RN1267]. The ICI [@RN1267] measures the same construct, LoC, and a high score would indicate the internal locus of control. On our scale, a high score would indicate an external locus of control. Thus a negative correlation is expected. Our scale showed a significant negative yet low correlation (r = -.21, p\<.01). @RN1267 also reported moderate negative correlation between ICI and and Mirels' (1970) "personal control' factor. They attributed the cause of such moderate correlation to the limited focus of the items in the "personal control' factor. Like Mirels'(1970), items retained in our scale limit their focus to the person's disposition on luck or personal ability to attain the desired goal. Whereas ICI encompasses items that also focus on self-image, and willingness to take action. As a result, such a correlation is expected.
+
+Locus of control is believed to be correlated with behaviors and emotions related to neuroticism such as maladaptive coping strategies [@RN1280] and depression [@benassi1988]. Previous studies reported external locus of control positively correlate to neuroticism [@HORNER1996; @morelli1979neuroticism]. Bangla Rotter's I-E scale also showed significant positive correlation with neuroticism, (r = .22, p \<0.01). Literature also suggests the externals would score low on openness to experinece personality trait [@RN1282; @rodrigues2018relationship]. Bangla Rotter's I-E scale showed a significant negative correlation with openness to experience , r = -.22, p\<.001. From these gathered evidence of validity we conferred our adapted scale has satisfactory convergent validity.
+
+Lastly, we gathered more information on the item quality of the retained items in our scale by Item response theory. We fitted a two-parameter logistic model (2PL) [@THISSEN2015436] to our data. The fit indices indicated a best fit of the model, (M2 = `r apa(unidim_fit_indices$M2,2,T)`, df = `r unidim_fit_indices$df`, p= `r apa(unidim_fit_indices$p,2,F)`, RMSEA = `r apa(unidim_fit_indices$RMSEA,2,F)`[`r apa(unidim_fit_indices$RMSEA_5,2,F)` - `r apa(unidim_fit_indices$RMSEA_95,2,F)`], CFI = `r apa(unidim_fit_indices$CFI,2,F)`, TLI = `r apa(unidim_fit_indices$TLI,2,F)`). Only one item was identified as a misfit item (item4). However, our IRT analysis aimed to gather as much information as possible on the items, not to discard any. As such, we retained all the items obtained in our one-factor solution. In terms of item difficulty, our scale contained items of all categories: easy, moderate and hard items and covered a substantial range of underlying locus of control attributes. Additionally, all items except item18 were also exhibiting item discrimination within the suggested range [@RN1275]. Test information curve also indicated adequate ability to discriminate between external locus of control and internal locus of control with precision as the peak of the curve centered near the center of the continuum at $\theta$ = -1 and $\theta$ = 0. Also, the high correlation of estimated $\theta$ score and the obtained score ( r =.98 , p$\le$.01) in our scale indicated the adequacy of our adapted scale.
+
+Based on the psychometric analysis conducted, we recommend that researchers use this scale to measure an individual's locus of control with precision. The scale can potentially be used in clinical and counseling settings to identify the LoC, thus facilitating the therapeutic process.
+
+
+```{r eval=FALSE, include=FALSE}
+library("lordif")
+
+Rotter.one.IRT
+rotter.DIF <- lordif(as.data.frame(Rotter.one.IRT), data$Gender, criterion = "Chisqr")
+rotter.DIF$stats[, 1:5]
+```
+
+# Future Directions
+
+We recommend some works for future researchers. First, geographically the scope of the data was narrow; data from other parts of the country should be considered to widen the scope. Second, the differential item functioning and measurement invariance can be analyzed for males and females and age groups to identify potential item bias.
+
+\newpage
+
+# References
+
+```{=tex}
+\begingroup
+\setlength{\parindent}{-0.5in}
+\setlength{\leftskip}{0.5in}
+```
+::: {#refs custom-style="Bibliography"}
+:::
+
+\endgroup
