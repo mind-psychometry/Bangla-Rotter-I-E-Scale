@@ -555,13 +555,8 @@ ggsave("figures/300/corplot.pdf",corplot, width = 3.5, height = 3.5, dpi = 300, 
 ggsave("figures/600/corplot.png",corplot, width = 3.5, height = 3.5, dpi = 600, bg ="white")
 ggsave("figures/600/corplot.pdf",corplot, width = 3.5, height = 3.5, dpi = 600, bg ="white")
 
-cor.hits <- as.data.frame(reshape2::melt(upper))
-colnames(cor.hits) <- c("value")
-corr.histogram <- ggplot(cor.hits,aes(x=value)) + 
-  geom_histogram(binwidth=.06, col=I("black"),fill="#00A08799")+apatheme+
-  labs( y="", x = "Inter-item correlation")+scale_y_continuous(limits = c(0, 50), expand = expansion(mult = c(0, 0.1)))+scale_x_continuous(limits = c(-.22,.65), breaks =c(-.22,0, .30, .50, .65))
+ggsave("figures/TIFF/Fig1.tiff",corplot, width = 3.5, height = 3.5, dpi = 600, bg ="white")
 
-ggsave("Figures/correlation_histogram.png", corr.histogram, width = 3, height = 6, dpi = 600, bg ="white")
 
 
 
@@ -707,6 +702,8 @@ ggsave("Figures/300/factors.pdf",factor, width =4, height = 7, dpi = 300)
 
 ggsave("Figures/600/factors.png",factor, width =3.5, height = 7, dpi = 600)
 ggsave("Figures/600/factors.pdf",factor, width =3.5, height = 7, dpi = 600)
+ggsave("Figures/TIFF/Fig2.tiff",factor, width =3.5, height = 7, dpi = 600)
+
 ```
 
 
@@ -905,7 +902,7 @@ apa_table(unclass(Factorloading))
 # Study 2 Confirmation of Factor Structure and Psychometric Properties of Bangla Rotter's I-E scale
 
 ```{r desfig, include=F}
-#EFA data
+#CFA data
 gt.cfa <- Rotter.CFA %>% 
   dplyr::select(item18 , item25 ,item11 , item15 , item16 , item10 ,item9 , item23 , item13 , item5 , item28 , item4)
 
@@ -1044,7 +1041,7 @@ Table <-  cbind( gt.table, gt.liket )%>%
     mean,
     Items,
     palette = "ggthemes::fivethirtyeight") %>%  
-  gtsave("Figures/descriptives_cfa.png",vwidth = 7000)
+  gtsave("Figures/600/descriptives_cfa.png",vwidth = 7000)
 ```
 
 
@@ -1489,11 +1486,14 @@ rownames(unidimensional.personfit_model_misfits)
 nrow(unidimensional.personfit_model_misfits)
 personfit <- ggplot(unidimensional.personfit, aes(x=Zh)) + geom_histogram(binwidth=.5,col=I("black"),fill="#00A08799")+geom_vline(xintercept = -2)+
   labs( y="Number of Participants", x = "Zh Statistics")+apatheme
+
+
 ggsave("Figures/300/personfit.png",personfit, width = 3.5, height = 3.5, dpi = 300, bg = "white")
 ggsave("Figures/300/personfit.pdf",personfit, width = 3.5, height = 3.5, dpi = 300, bg = "white")
 
 ggsave("Figures/600/personfit.png",personfit, width = 3.5, height = 3.5, dpi = 600, bg = "white")
 ggsave("Figures/600/personfit.pdf",personfit, width = 3.5, height = 3.5, dpi = 600, bg = "white")
+ggsave("Figures/TIFF/Fig4.tiff",personfit, width = 3.5, height = 3.5, dpi = 600, bg = "white")
 
 ```
 
@@ -1575,6 +1575,9 @@ ggsave("Figures/300/ifc.pdf",ifc, width = 7, height = 8, dpi = 300, bg = "white"
 
 ggsave("Figures/600/ifc.png",ifc, width = 7, height = 8, dpi = 600, bg = "white")
 ggsave("Figures/600/ifc.pdf",ifc, width = 7, height = 8, dpi = 600, bg = "white")
+
+
+ggsave("Figures/TIFF/Fig6.tiff",ifc, width = 7, height = 8, dpi = 600, bg = "white")
 
 
 #plot(unidimensional_fit, type = "trace", facet =F, main = "(A)") #item cha. curve
@@ -1703,6 +1706,8 @@ ggsave("Figures/300/icc_tic.pdf",icctic, width = 7, height = 7, dpi = 300)
 
 ggsave("Figures/600/icc_tic.png",icctic, width = 7, height = 7, dpi = 600)
 ggsave("Figures/600/icc_tic.pdf",icctic, width = 7, height = 7, dpi = 600)
+
+ggsave("Figures/TIFF/Fig5.tiff",icctic, width = 7, height = 7, dpi = 600)
 
 ```
 
