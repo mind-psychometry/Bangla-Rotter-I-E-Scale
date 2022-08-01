@@ -283,7 +283,7 @@ We used R (version 4.1.0), including R-packages "Psych" [@R-base] and "ggplot2"[
 
 ## Result and Discussion
 
-```{r desfigperp, include=F}
+```{r desfigperp, include=FALSE}
 #EFA data
 library(gt)
 library(gtExtras)
@@ -357,14 +357,14 @@ gt.liket <- full.percentage3$"_data"
 Table <-  cbind( gt.table, gt.liket )%>% 
   gt()%>% 
   # histogram and density plots
-  gtExtras::gt_sparkline(
+  gtExtras::gt_plt_dist(
     hist_data,
     type = "histogram",
     line_color = "black", 
     fill_color = "#00A08799",
     bw = 1,
     same_limit = TRUE)%>%
-  gtExtras::gt_sparkline(
+  gtExtras::gt_plt_dist(
     dens_data,
     type = "density",
     line_color = "black", 
@@ -555,9 +555,9 @@ ggsave("figures/300/corplot.pdf",corplot, width = 3.5, height = 3.5, dpi = 300, 
 ggsave("figures/600/corplot.png",corplot, width = 3.5, height = 3.5, dpi = 600, bg ="white")
 ggsave("figures/600/corplot.pdf",corplot, width = 3.5, height = 3.5, dpi = 600, bg ="white")
 
-ggsave("figures/TIFF/Fig1.tiff",corplot, width = 3.5, height = 3.5, dpi = 600, bg ="white")
+ggsave("figures/TIFF/Fig12.tiff",corplot, width = 3.5, height = 3.5, dpi = 600, bg ="white",compression = "lzw+p")
 
-
+tiff("figures/TIFF/outfile.tif",corplot, compression = "lzw",width = 3.5,units = "in", height = 3.5, res=300)
 
 
 ```
@@ -973,14 +973,14 @@ gt.liket <- full.percentage3$"_data"
 Table <-  cbind( gt.table, gt.liket )%>% 
   gt()%>% 
   # histogram and density plots
-  gtExtras::gt_sparkline(
+  gtExtras::gt_plt_dist(
     hist_data,
     type = "histogram",
     line_color = "black", 
     fill_color = "#00A08799",
     bw = 1,
     same_limit = TRUE)%>%
-  gtExtras::gt_sparkline(
+  gtExtras::gt_plt_dist(
     dens_data,
     type = "density",
     line_color = "black", 

@@ -3,12 +3,7 @@
 \PassOptionsToPackage{hyphens}{url}
 %
 \documentclass[
-  english,
   man]{apa6}
-\title{Psychometric Evaluation and Validation of Bangla Rotter Internal-External Scale with Classical Test Theory and Item Response theory}
-\author{Mushfiqul Anwar Siraji\textsuperscript{1} \& Shamsul Haque\textsuperscript{1}}
-\date{}
-
 \usepackage{amsmath,amssymb}
 \usepackage{lmodern}
 \usepackage{iftex}
@@ -39,16 +34,6 @@
   \KOMAoptions{parskip=half}}
 \makeatother
 \usepackage{xcolor}
-\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
-\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
-\hypersetup{
-  pdftitle={Psychometric Evaluation and Validation of Bangla Rotter Internal-External Scale with Classical Test Theory and Item Response theory},
-  pdfauthor={Mushfiqul Anwar Siraji1 \& Shamsul Haque1},
-  pdflang={en-EN},
-  pdfkeywords={Locus of Control; Classical Test Theory; Item Response Theory; Exploratory Factor Analysis; Confirmatory Factor Analysis; Convergent validity},
-  hidelinks,
-  pdfcreator={LaTeX via pandoc}}
-\urlstyle{same} % disable monospaced font for URLs
 \usepackage{graphicx}
 \makeatletter
 \def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
@@ -98,6 +83,15 @@
 \newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{#1}}
 \newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{#1}\break}
 \newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
+\ifLuaTeX
+\usepackage[bidi=basic]{babel}
+\else
+\usepackage[bidi=default]{babel}
+\fi
+\babelprovide[main,import]{english}
+% get rid of language-specific shorthands (see #6817):
+\let\LanguageShortHands\languageshorthands
+\def\languageshorthands#1{}
 % Manuscript styling
 \usepackage{upgreek}
 \captionsetup{font=singlespacing,justification=justified}
@@ -128,6 +122,20 @@
 % \setlength{\parindent}{0.5in}
 % \setlength{\parskip}{0pt plus 0pt minus 0pt}
 
+% Overwrite redefinition of paragraph and subparagraph by the default LaTeX template
+% See https://github.com/crsh/papaja/issues/292
+\makeatletter
+\renewcommand{\paragraph}{\@startsection{paragraph}{4}{\parindent}%
+  {0\baselineskip \@plus 0.2ex \@minus 0.2ex}%
+  {-1em}%
+  {\normalfont\normalsize\bfseries\itshape\typesectitle}}
+
+\renewcommand{\subparagraph}[1]{\@startsection{subparagraph}{5}{1em}%
+  {0\baselineskip \@plus 0.2ex \@minus 0.2ex}%
+  {-\z@\relax}%
+  {\normalfont\normalsize\itshape\hspace{\parindent}{#1}\textit{\addperi}}{\relax}}
+\makeatother
+
 % \usepackage{etoolbox}
 \makeatletter
 \patchcmd{\HyOrg@maketitle}
@@ -139,7 +147,15 @@
   {\section*{\protect\normalfont{\@title}}}
   {}{\typeout{Failed to patch title.}}
 \makeatother
-\shorttitle{Bangla Rotter's I-E Scale}
+
+\usepackage{xpatch}
+\makeatletter
+\xapptocmd\appendix
+  {\xapptocmd\section
+    {\addcontentsline{toc}{section}{\appendixname\ifoneappendix\else~\theappendix\fi\\: #1}}
+    {}{\InnerPatchFailed}%
+  }
+{}{\PatchFailed}
 \keywords{Locus of Control; Classical Test Theory; Item Response Theory; Exploratory Factor Analysis; Confirmatory Factor Analysis; Convergent validity\newline\indent Word count: 4962}
 \DeclareDelayedFloatFlavor{ThreePartTable}{table}
 \DeclareDelayedFloatFlavor{lltable}{table}
@@ -151,20 +167,26 @@
 
 \linenumbers
 \usepackage{csquotes}
-\ifXeTeX
-  % Load polyglossia as late as possible: uses bidi with RTL langages (e.g. Hebrew, Arabic)
-  \usepackage{polyglossia}
-  \setmainlanguage[]{english}
-\else
-  \usepackage[main=english]{babel}
-% get rid of language-specific shorthands (see #6817):
-\let\LanguageShortHands\languageshorthands
-\def\languageshorthands#1{}
-\fi
 \ifLuaTeX
   \usepackage{selnolig}  % disable illegal ligatures
 \fi
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same} % disable monospaced font for URLs
+\hypersetup{
+  pdftitle={Psychometric Evaluation and Validation of Bangla Rotter Internal-External Scale with Classical Test Theory and Item Response theory},
+  pdfauthor={Mushfiqul Anwar Siraji1 \& Shamsul Haque1},
+  pdflang={en-EN},
+  pdfkeywords={Locus of Control; Classical Test Theory; Item Response Theory; Exploratory Factor Analysis; Confirmatory Factor Analysis; Convergent validity},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
 
+\title{Psychometric Evaluation and Validation of Bangla Rotter Internal-External Scale with Classical Test Theory and Item Response theory}
+\author{Mushfiqul Anwar Siraji\textsuperscript{1} \& Shamsul Haque\textsuperscript{1}}
+\date{}
+
+
+\shorttitle{Bangla Rotter's I-E Scale}
 
 \authornote{
 
@@ -182,7 +204,7 @@ Correspondence concerning this article should be addressed to Shamsul Haque, Mon
 
 \affiliation{\vspace{0.5cm}\textsuperscript{1} Monash University, Malaysia}
 
-\abstract{
+\abstract{%
 There is no psychometric tool to assess locus of control for Bangla-speaking people. Hence, we attempted to translate the 23-item Rotter's Internal-External scale into Bangla and validate it on Bangladeshi adult participants. In Study 1 (N = 300), we translated the items into Bangla and conducted an exploratory factor analysis, which revealed a one-factor solution with 12 items. In Study 2 (N =178) confirmatory factor analysis yielded the best fit with 11 items (CFI =.98, TLI = .97, RMSEA = .00). Reliability coefficient of this 11-item scale was satisfactory (McDonald's Omega = .72). The scale's significant correlations with Internal Control Index (a locus of control scale), Neuroticism and Openness to Experience from Big Five Personality Inventory demonstrated its convergent validity. The item quality was assessed on the combined samples of Study 1 \& 2 (N=478) using the item response theory (IRT), which showed that the scale was composed of easy, moderate, and hard items. Item discrimination analysis indicated sufficient discriminating power of the items (.49 to 2.21). Test information curve showed the scale's ability to discriminate between external and internal locus of control. These psychometric properties indicate the usability of the Bangla version of Rotter's Internal-External scale.
 }
 
@@ -198,7 +220,7 @@ Locus of Control (LoC) is the individual's belief about the contingency of the o
 
 Since J. B. Rotter (1966) introduced the term LoC, it has been widely used to understand people's behavior in different domains, including academic achievement (Findley \& Cooper, 1983; Karaman, Nelson, \& Cavazos Vela, 2018), health (Jacobs-Lawson, Waddell, \& Webb, 2011), professional competence(Mantesso, Petrucka, \& Bassendowski, 2008; Smidt, Kammermeyer, Roux, Theisen, \& Weber, 2018; Witt, 1988) and consumer behavior (Lee, Chang, Cheng, \& Chen, 2018; Rodriguez-Ricardo, Sicilia, \& López, 2019). Internal LoC is attributed to better health care management and self-assessment (Pourhoseinzadeh, Gheibizadeh, Moradikalboland, et al., 2017). Internal LoC also positively influences academic success (Karaman et al., 2018) . External LoC is associated with increased depression, anxiety, stress (Kurtović, Vuković, \& Gajić, 2018), and personality factors including high neuroticism (Horner, 1996) and low openness to experience (Kobasa, Maddi, \& Kahn, 1982; Sherman, Pelletier, \& Ryckman, 1973; Taylor, 1983, 1983). Assessment of LoC is also beneficial in the different therapeutic processes (E. K. Baker, 1979; Delsignore \& Schnyder, 2007). Individuals with internal LoC are more receptive to information (Cavaiola \& Strohmetz, 2009), more resilient and hopeful than external LoC, thus facilitating the favorable outcome in the psychotherapy (Foon, 1987).LoC also facilitates the ``Transactional Analysis'' based counselling process by indicating an individual's predominant ego-states (Loffredo, 1998). Internal LoC is associated with ``Adult'' ego state and External LoC is associated with ``Adapted Child'' ego state (Loffredo, 1998).
 
-Rotter's Internal-External (I-E) (J. B. Rotter, 1966) scale is the most widely used scale to measure the LoC of an individual. However, the origin of this scale is from an individualist society (Hofstede, 1984; Smith, Trompenaars, \& Dugan, 1995). Members of individualist culture define their identity by personal life choices, whereas members of collectivist countries emphasize the membership of groups (Hofstede, 1984). Smith et al. (1995) coined some fundamental problems of using Rotter's I-E scale in collectivist cultures, including 'modesty bias'', where individuals may guide their responses to represent the group's opinion instead of individual preference. Also values parallel to LoC including ``mastery over the environment'' and ``harmony with the environment'' are differentially endorsed by members of different cultures (Schwartz, 1990, 1992). This indicates the cultural susceptibility of the construct: LoC which may lead to different latent structures across various cultures. J. B. Rotter (1966) mentioned one general factor and several other but less essential factors and conferred the structure as unidimensional. However,studies in the USA (Joe \& Jahn, 1973; Mirels, 1970) and other countries (Marsh \& Richards, 1987; Niles, 1981; Tobacyk, 1978; Tyler, Dhawan, \& Sinha, 1989) have established the multidimensional nature of Rotter's I-E scale. Marsh and Richards (1987) summarized 20 studies which analyzed the latent structure by exploratory factor analysis(EFA). summarized 20 studies that analyzed the latent structure by exploratory factor analysis (EFA). They reported that the number of possible interpretable factors ranged between 2 to 6 with two recurring factors: ``political control''and ``personal control.'' The emergence of ``political control'' and ``personal control'' as salient factors in Rotter's I-E Scale was first reported in the work of Mirels (1970). He conducted an EFA on 316 (f = 157) undergraduate students and reported these two factors. Items clustered under ``personal control'' stemmed from the individual's inclination to prefer personal ability and hard work over luck. The ``Political control'' factor focuses on the individual's disposition regarding their ability to control the political and world affairs as a part of the social system. Smith et al. (1995) administered the Rotter's I-E scale on 9140 participants from 43 different countries and reported three interpretable dimensions: ``personal-political,'' ``individual-social'' and ``luck.'' They reported a trend of fatalism about political events and high preference on luck among the included Asian nations. However, Studies in the Netherlands (Andriessen \& Van Cadsand, 1983), Brazil (Nagelschmidt \& Jakob, 1977), Australia (Watson, 1981), Sri Lanka (Niles, 1981) reported only the ``personal control'' factor indicating the susceptibility of the latent construct structure of Rotter's I-E scale to cultural variation.
+Rotter's Internal-External (I-E) (J. B. Rotter, 1966) scale is the most widely used scale to measure the LoC of an individual. However, the origin of this scale is from an individualist society (Hofstede, 1984; Smith, Trompenaars, \& Dugan, 1995). Members of individualist culture define their identity by personal life choices, whereas members of collectivist countries emphasize the membership of groups (Hofstede, 1984). Smith et al. (1995) coined some fundamental problems of using Rotter's I-E scale in collectivist cultures, including 'modesty bias'', where individuals may guide their responses to represent the group's opinion instead of individual preference. Also values parallel to LoC including ``mastery over the environment'' and ``harmony with the environment'' are differentially endorsed by members of different cultures (Schwartz, 1990, 1992). This indicates the cultural susceptibility of the construct: LoC which may lead to different latent structures across various cultures. J. B. Rotter (1966) mentioned one general factor and several other but less essential factors and conferred the structure as unidimensional. However,studies in the USA (Joe \& Jahn, 1973; Mirels, 1970) and other countries (Marsh \& Richards, 1987; Niles, 1981; Tobacyk, 1978; Tyler, Dhawan, \& Sinha, 1989) have established the multidimensional nature of Rotter's I-E scale. Marsh and Richards (1987) summarized 20 studies which analyzed the latent structure by exploratory factor analysis(EFA). summarized 20 studies that analyzed the latent structure by exploratory factor analysis (EFA). They reported that the number of possible interpretable factors ranged between 2 to 6 with two recurring factors: ``political control''and ``personal control''. The emergence of ``political control'' and ``personal control'' as salient factors in Rotter's I-E Scale was first reported in the work of Mirels (1970). He conducted an EFA on 316 (f = 157) undergraduate students and reported these two factors. Items clustered under ``personal control'' stemmed from the individual's inclination to prefer personal ability and hard work over luck. The ``Political control'' factor focuses on the individual's disposition regarding their ability to control the political and world affairs as a part of the social system. Smith et al. (1995) administered the Rotter's I-E scale on 9140 participants from 43 different countries and reported three interpretable dimensions: ``personal-political'', ``individual-social'' and ``luck.'' They reported a trend of fatalism about political events and high preference on luck among the included Asian nations. However, Studies in the Netherlands (Andriessen \& Van Cadsand, 1983), Brazil (Nagelschmidt \& Jakob, 1977), Australia (Watson, 1981), Sri Lanka (Niles, 1981) reported only the ``personal control'' factor indicating the susceptibility of the latent construct structure of Rotter's I-E scale to cultural variation.
 
 Due to this susceptibility, it is inappropriate to use the Rotter's I-E scale in Bangladesh without proper psychometric calibration. Besides, there is a dearth of psychometrically valid scales in Bangladesh to measure the LoC culturally sensitively. We conducted two studies involving Bangladeshi elementary school teachers to culturally adapt and psychometrically validate Rotter's I-E scale by following classical test theory (CTT) and item response theory (IRT). CTT uses a set of concepts (true score, observed score, reliability) and provides information on the whole scale (DeVellis, 2006). CTT attributes the observed scores obtained on a scale to the unobservable variable of interest and possible measurement errors. The reliability coefficients indicate how closely the observed score reflects the unobservable variable (DeVellis, 2006). IRT assesses the item quality across the different latent construct levels and complements the psychometric analysis by providing information regarding the item's ability to discriminate among the respondents across the latent construct continuum (Kazemi \& Kajonius, 2021). It also provides information on the level of latent construct a respondent requires to attain a 50\% chance to score towards the positive high construct direction for a particular item (Kazemi \& Kajonius, 2021). TOur first study culturally adapted the scale and identified the latent construct structure by exploratory factor analysis. The second study verified the latent construct structure that emerged in the first study by a confirmatory factor analysis. Subsequect psychometric propertise were also established using CTT and IRT.
 
@@ -503,7 +525,7 @@ Participants were invited to participate voluntarily in the online study. Once a
 \hypertarget{results-and-discussion}{%
 \subsubsection{Results and Discussion}\label{results-and-discussion}}
 
-We used the `Lavaan'(Rosseel, 2012) package in Rstudio to conduct the categorical confirmatory factor analysis with robust weighted least square (WLSMV) estimator as our response data was dichotomous (Brown, 2015). Commonly used Model fit benchmarks of Hu and Bentler (1999) focused on (i) the comparative fit index (CFI;) (ii) the Tucker Lewis index (TLI) (CFI/TLI, \(goodfit \geq .95\), \(acceptable fit\geq .90\)) (ii) the root mean square error of approximation (RMSEA; close to .06 or below), (iii) the standardized root mean square (SRMR; close to .08 or below) to estimate the model fit. Additionally, the chi-square test is also used to estimate the absolute model fit. Table \ref{tab:tabCfa} summarizes the fit indices of our fitted model. The fitted model failed to attain an absolute fit estimated by the chi-square test. It is necessary to keep in mind that the chi-square test is sensitive to sample size while estimating the model and not recommended to be used as the sole index of absolute model fit (Brown, 2015). SRMR value was also higher than general guideline. It is evident from the work of (2002) that for categorical data SRMR performs poorly. Subsequently we judged the model fit based on incremental and parsimony fit indices values. Incremental fit indices for the one factor model (CFI =.92, TLI = .91) and parsimony index (RMSEA = .04) were indicating acceptable fit. However, one item (item23) loaded poorly. By discarding the item one factor model attained best fit (CFI =.98, TLI = .97, RMSEA = .00). SRMR value (.10) was also close to the suggested guideline(.08) The internal consistency reliability coefficients McDonald's omega value for both models were satisfactory (.71 \& .72, respectively). Fig\ref{fig:figcfa} depicts both model.
+We used the `Lavaan'(Rosseel, 2012) package in Rstudio to conduct the categorical confirmatory factor analysis with robust weighted least square (WLSMV) estimator as our response data was dichotomous (Brown, 2015). Commonly used Model fit benchmarks of Hu and Bentler (1999) focused on (i) the comparative fit index (CFI;) (ii) the Tucker Lewis index (TLI) (CFI/TLI, \(goodfit \geq .95\), \(acceptable fit\geq .90\)) (ii) the root mean square error of approximation (RMSEA; close to .06 or below), (iii) the standardized root mean square (SRMR; close to .08 or below) to estimate the model fit. Additionally, the chi-square test is also used to estimate the absolute model fit. Table \ref{tab:tabCfa} summarizes the fit indices of our fitted model. The fitted model failed to attain an absolute fit estimated by the chi-square test. It is necessary to keep in mind that the chi-square test is sensitive to sample size while estimating the model and not recommended to be used as the sole index of absolute model fit (Brown, 2015). SRMR value was also higher than general guideline. It is evident from the work of ({[}Generic{]}, 2002) that for categorical data SRMR performs poorly. Subsequently we judged the model fit based on incremental and parsimony fit indices values. Incremental fit indices for the one factor model (CFI =.92, TLI = .91) and parsimony index (RMSEA = .04) were indicating acceptable fit. However, one item (item23) loaded poorly. By discarding the item one factor model attained best fit (CFI =.98, TLI = .97, RMSEA = .00). SRMR value (.10) was also close to the suggested guideline(.08) The internal consistency reliability coefficients McDonald's omega value for both models were satisfactory (.71 \& .72, respectively). Fig\ref{fig:figcfa} depicts both model.
 
 \begin{table}[tbp]
 
@@ -625,9 +647,6 @@ We recommend some works for future researchers. First, geographically the scope 
 
 \hypertarget{refs}{}
 \begin{CSLReferences}{1}{0}
-\leavevmode\vadjust pre{\hypertarget{ref-RN1272}{}}%
-(2002). Generic.
-
 \leavevmode\vadjust pre{\hypertarget{ref-R-equate}{}}%
 Albano, A. D. (2016). {equate}: An {R} package for observed-score linking and equating. \emph{Journal of Statistical Software}, \emph{74}(8), 1--36. \url{https://doi.org/10.18637/jss.v074.i08}
 
@@ -673,11 +692,14 @@ Benassi, V. A., Sweeney, P. D., \& Dufour, C. L. (1988). Is there a relation bet
 \leavevmode\vadjust pre{\hypertarget{ref-RN1279}{}}%
 Benet-Martínez, V., \& John, O. P. (1998). Los cinco grandes across cultures and ethnic groups: Multitrait multimethod analyses of the big five in spanish and english. \emph{Journal of Personality and Social Psychology}, \emph{75}(3), 729--750. \url{https://doi.org/10.1037/0022-3514.75.3.729}
 
+\leavevmode\vadjust pre{\hypertarget{ref-R-effectsize}{}}%
+Ben-Shachar, M. S., Lüdecke, D., \& Makowski, D. (2020). {e}ffectsize: Estimation of effect size indices and standardized parameters. \emph{Journal of Open Source Software}, \emph{5}(56), 2815. \url{https://doi.org/10.21105/joss.02815}
+
 \leavevmode\vadjust pre{\hypertarget{ref-RN1270}{}}%
 Bentler, P. M., \& Chou, C.-P. (1987). Practical issues in structural modeling. \emph{Sociological Methods \& Research}, \emph{16}(1), 78--117. \url{https://doi.org/10.1177/0049124187016001004}
 
 \leavevmode\vadjust pre{\hypertarget{ref-R-lpSolve}{}}%
-Berkelaar, M.others. (2020). \emph{lpSolve: Interface to 'lp\_solve' v. 5.5 to solve linear/integer programs}. Retrieved from \url{https://CRAN.R-project.org/package=lpSolve}
+Berkelaar, M. et al. (2020). \emph{lpSolve: Interface to 'lp\_solve' v. 5.5 to solve linear/integer programs}. Retrieved from \url{https://CRAN.R-project.org/package=lpSolve}
 
 \leavevmode\vadjust pre{\hypertarget{ref-RN1231}{}}%
 Brown, T. A. (2015). \emph{Confirmatory factor analysis for applied research} (2nd ed., pp. xvii, 462--xvii, 462). New York, NY, US: The Guilford Press.
@@ -772,6 +794,12 @@ Foon, A. E. (1987). Locus of control as a predictor of outcome of psychotherapy.
 \leavevmode\vadjust pre{\hypertarget{ref-R-polycor}{}}%
 Fox, J. (2019). \emph{Polycor: Polychoric and polyserial correlations}. Retrieved from \url{https://CRAN.R-project.org/package=polycor}
 
+\leavevmode\vadjust pre{\hypertarget{ref-R-car}{}}%
+Fox, J., \& Weisberg, S. (2019). \emph{An {R} companion to applied regression} (Third). Thousand Oaks {CA}: Sage. Retrieved from \url{https://socialsciences.mcmaster.ca/jfox/Books/Companion/}
+
+\leavevmode\vadjust pre{\hypertarget{ref-R-carData}{}}%
+Fox, J., Weisberg, S., \& Price, B. (2022). \emph{carData: Companion to applied regression data sets}. Retrieved from \url{https://CRAN.R-project.org/package=carData}
+
 \leavevmode\vadjust pre{\hypertarget{ref-franklin1963youth}{}}%
 Franklin, R. D. (1963). \emph{Youth's expectancies about internal versus external control of reinforcement related to n variables.} Purdue University.
 
@@ -783,6 +811,12 @@ Gamer, M., Lemon, J., \& \textless puspendra.pusp22@gmail.com\textgreater, I. F.
 
 \leavevmode\vadjust pre{\hypertarget{ref-RN1263}{}}%
 Garrido, L. E., Abad, F. J., \& Ponsoda, V. (2013). A new look at horn's parallel analysis with ordinal variables. \emph{Psychol Methods}, \emph{18}(4), 454--474. \url{https://doi.org/10.1037/a0030005}
+
+\leavevmode\vadjust pre{\hypertarget{ref-RN1272}{}}%
+{[}Generic{]}. (2002).
+
+\leavevmode\vadjust pre{\hypertarget{ref-R-mvtnorm}{}}%
+Genz, A., \& Bretz, F. (2009). \emph{Computation of multivariate normal and t probabilities}. Heidelberg: Springer-Verlag.
 
 \leavevmode\vadjust pre{\hypertarget{ref-R-golino2021eganet}{}}%
 Golino, H., \& Christensen, A. P. (2021). \emph{EGAnet: Exploratory graph analysis -- a framework for estimating the number of dimensions in multivariate data using network psychometrics}.
@@ -807,6 +841,12 @@ Horn, J. L. (1965). A rationale and test for the number of factors in factor ana
 
 \leavevmode\vadjust pre{\hypertarget{ref-HORNER1996}{}}%
 Horner, K. L. (1996). Locus of control, neuroticism, and stressors: Combined influences on reported physical illness. \emph{Personality and Individual Differences}, \emph{21}(2), 195--204. https://doi.org/\url{https://doi.org/10.1016/0191-8869(96)00067-0}
+
+\leavevmode\vadjust pre{\hypertarget{ref-R-TH.data}{}}%
+Hothorn, T. (2021). \emph{TH.data: TH's data archive}. Retrieved from \url{https://CRAN.R-project.org/package=TH.data}
+
+\leavevmode\vadjust pre{\hypertarget{ref-R-multcomp}{}}%
+Hothorn, T., Bretz, F., \& Westfall, P. (2008). Simultaneous inference in general parametric models. \emph{Biometrical Journal}, \emph{50}(3), 346--363.
 
 \leavevmode\vadjust pre{\hypertarget{ref-RN1162}{}}%
 Hu, L., \& Bentler, P. M. (1999). Cutoff criteria for fit indexes in covariance structure analysis: Conventional criteria versus new alternatives. \emph{Structural Equation Modeling: A Multidisciplinary Journal}, \emph{6}(1), 1--55. \url{https://doi.org/10.1080/10705519909540118}
@@ -836,7 +876,7 @@ Joe, V. C., \& Jahn, J. C. (1973). Factor structure of the rotter i-e scale. \em
 John, O. P., Donahue, E. M., \& Kentle, R. L. (1991). \emph{The big five inventory--versions 4a and 5b}. Unpublished Work, Berkeley, CA: University of California,Berkeley, Institute of Personality; Social Research.
 
 \leavevmode\vadjust pre{\hypertarget{ref-RN1278}{}}%
-John, Oliver P., Naumann, L. P., \& Soto, C. J. (2008). Paradigm shift to the integrative big five trait taxonomy: History, measurement, and conceptual issues. In \emph{Handbook of personality: Theory and research, 3rd ed.} (pp. 114--158). Book Section, New York, NY, US: The Guilford Press.
+John, Oliver P., Naumann, L. P., \& Soto, C. J. (2008). Paradigm shift to the integrative big five trait taxonomy: History, measurement, and conceptual issues {[}Book Section{]}. In \emph{Handbook of personality: Theory and research, 3rd ed.} (pp. 114--158). New York, NY, US: The Guilford Press.
 
 \leavevmode\vadjust pre{\hypertarget{ref-R-semTable}{}}%
 Johnson, P., \& Kite, B. (2020). \emph{semTable: Structural equation modeling tables}. Retrieved from \url{https://CRAN.R-project.org/package=semTable}
@@ -894,6 +934,9 @@ Loffredo, D. A. (1998). The relationships among ego states, locus of control, an
 
 \leavevmode\vadjust pre{\hypertarget{ref-RN1228}{}}%
 Lorenzo-Seva, U., Timmerman, M., \& Kiers, H. (2011). The hull method for selecting the number of common factors. \emph{Multivariate Behavioral Research}, \emph{46}, 340--364. \url{https://doi.org/10.1080/00273171.2011.564527}
+
+\leavevmode\vadjust pre{\hypertarget{ref-R-sjstats}{}}%
+Lüdecke, D. (2021). \emph{Sjstats: Statistical functions for regression models (version 0.18.1)}. \url{https://doi.org/10.5281/zenodo.1284472}
 
 \leavevmode\vadjust pre{\hypertarget{ref-RN1290}{}}%
 Lynn, M. R. (1986). Determination and quantification of content validity. \emph{Nurs Res}, \emph{35}(6), 382--385.
@@ -965,7 +1008,7 @@ Polit, D., Beck, C., \& Owen, S. (2007). Is the CVI an acceptable indicator of c
 Pornprasertmanit, S., Miller, P., Schoemann, A., \& Jorgensen, T. D. (2021). \emph{Simsem: SIMulated structural equation modeling}. Retrieved from \url{https://CRAN.R-project.org/package=simsem}
 
 \leavevmode\vadjust pre{\hypertarget{ref-pourhoseinzadeh2017relationship}{}}%
-Pourhoseinzadeh, M., Gheibizadeh, M., Moradikalboland, M.others. (2017). The relationship between health locus of control and health behaviors in emergency medicine personnel. \emph{International Journal of Community Based Nursing and Midwifery}, \emph{5}(4), 397.
+Pourhoseinzadeh, M., Gheibizadeh, M., Moradikalboland, M., et al. (2017). The relationship between health locus of control and health behaviors in emergency medicine personnel. \emph{International Journal of Community Based Nursing and Midwifery}, \emph{5}(4), 397.
 
 \leavevmode\vadjust pre{\hypertarget{ref-R-foreign}{}}%
 R Core Team. (2020). \emph{Foreign: Read data stored by 'minitab', 's', 'SAS', 'SPSS', 'stata', 'systat', 'weka', 'dBase', ...} Retrieved from \url{https://CRAN.R-project.org/package=foreign}
@@ -992,7 +1035,7 @@ Rosseel, Y. (2012). {lavaan}: An {R} package for structural equation modeling. \
 Rotter, J. B. (1966). Generalized expectancies for internal versus external control of reinforcement. \emph{Psychol Monogr}, \emph{80}(1), 1--28. \url{https://doi.org/10.1037/h0092976}
 
 \leavevmode\vadjust pre{\hypertarget{ref-rotter1972applications}{}}%
-Rotter, Julian B., Chance, J. E., \& Phares, E. J. (1972). Applications of a social learning theory of personality.
+Rotter, Julian B., Chance, J. E., \& Phares, E. J. (1972). \emph{Applications of a social learning theory of personality.}
 
 \leavevmode\vadjust pre{\hypertarget{ref-R-dlookr}{}}%
 Ryu, C. (2021). \emph{Dlookr: Tools for data diagnosis, exploration, transformation}. Retrieved from \url{https://CRAN.R-project.org/package=dlookr}
@@ -1014,6 +1057,9 @@ Shapiro, S. S., \& Wilk, M. B. (1965). An analysis of variance test for normalit
 
 \leavevmode\vadjust pre{\hypertarget{ref-RN1282}{}}%
 Sherman, M. F., Pelletier, R. J., \& Ryckman, R. M. (1973). Replication of the relationship between dogmatism and locus of control. \emph{Psychological Reports}, \emph{33}(3), 749--750. \url{https://doi.org/10.2466/pr0.1973.33.3.749}
+
+\leavevmode\vadjust pre{\hypertarget{ref-R-plotly}{}}%
+Sievert, C. (2020). \emph{Interactive web-based data visualization with r, plotly, and shiny}. Chapman; Hall/CRC. Retrieved from \url{https://plotly-r.com}
 
 \leavevmode\vadjust pre{\hypertarget{ref-R-ggrepel}{}}%
 Slowikowski, K. (2021). \emph{Ggrepel: Automatically position non-overlapping text labels with 'ggplot2'}. Retrieved from \url{https://CRAN.R-project.org/package=ggrepel}
@@ -1089,6 +1135,9 @@ Wickham, H., François, R., Henry, L., \& Müller, K. (2021). \emph{Dplyr: A gra
 
 \leavevmode\vadjust pre{\hypertarget{ref-R-readr}{}}%
 Wickham, H., \& Hester, J. (2021). \emph{Readr: Read rectangular text data}. Retrieved from \url{https://CRAN.R-project.org/package=readr}
+
+\leavevmode\vadjust pre{\hypertarget{ref-R-scales}{}}%
+Wickham, H., \& Seidel, D. (2020). \emph{Scales: Scale functions for visualization}. Retrieved from \url{https://CRAN.R-project.org/package=scales}
 
 \leavevmode\vadjust pre{\hypertarget{ref-R-cowplot}{}}%
 Wilke, C. O. (2020). \emph{Cowplot: Streamlined plot theme and plot annotations for 'ggplot2'}. Retrieved from \url{https://CRAN.R-project.org/package=cowplot}
