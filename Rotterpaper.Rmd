@@ -219,6 +219,13 @@ clear.labels <- function(x) {
 Descriptives.gender <- clear.labels(Descriptives.gender)
 
 
+## Recoding Descriptives.gender$`Marital Status`
+Descriptives.gender$`Marital Status` <- as.character(Descriptives.gender$`Marital Status`)
+Descriptives.gender$`Marital Status`[Descriptives.gender$`Marital Status` == "1"] <- "Married"
+Descriptives.gender$`Marital Status`[Descriptives.gender$`Marital Status` == "2"] <- "Unmarried"
+Descriptives.gender$`Marital Status`[Descriptives.gender$`Marital Status` == "3"] <- "Divorced"
+Descriptives.gender$`Marital Status` <- factor(Descriptives.gender$`Marital Status`)
+
 
 
 
@@ -226,8 +233,9 @@ desc_table <-  gtsummary::tbl_summary(Descriptives.gender,
                                       by = sample,
 statistic = list(
   all_continuous() ~ "{mean} ({sd})",
-  all_categorical() ~ "{n} ({p}%)"
-  ),digits = all_continuous() ~ 2,
+  all_categorical() ~ "{n} ({p}%)"),
+type = list(`Education Years` ~ 'continuous'),
+digits = all_continuous() ~ 2,
     missing = "no") %>%
   add_overall() %>% 
    add_p()%>%
@@ -345,13 +353,15 @@ Items <- rownames(full.percentage1)
 as.data.frame(Items)
 full.percentage3 <- cbind(Items,full.percentage1)
 
-full.percentage3 <- full.percentage3[order(Items),] 
-full.percentage3 <- as.data.frame(full.percentage3[,-1]) %>% 
+full.percentage4 <- full.percentage3[order(Items),] 
+
+
+full.percentage5 <- as.data.frame(full.percentage4[,-1]) %>% 
   gt()
 
 
 gt.table <- gt.data.tab$'_data'
-gt.liket <- full.percentage3$"_data"
+gt.liket <- full.percentage5$"_data"
 
 
 Table <-  cbind( gt.table, gt.liket )%>% 
@@ -647,7 +657,7 @@ parallel = ggplot(Adjusted.EV, aes(x=num, y=eigenvalue, shape=type, color=type))
   geom_hline(yintercept=1, linetype = 'dashed') + apatheme +theme(,legend.position = "None")   + 
   theme(axis.title.x = element_text(size = 10),
         axis.title.y = element_text(size = 10))
-#text = element_text(size = 25)
+ggsave("Figures/300/parallel.png",parallel, width =3.5, height = 3.5, dpi = 300)
 
 ```
 
@@ -678,7 +688,7 @@ scree.plot <-ggplot(FA.Scree, aes(x=num, y=eigenvalue,color=type, shape=type))+
   scale_x_continuous(name='Factor Number (Scree Plot)', limits=c(0, 12),breaks=seq(0,12,4))+
   geom_hline(yintercept=1, linetype = 'dashed') + apatheme +theme(legend.position = "None") +  theme(axis.title.x = element_text(size = 10),
         axis.title.y = element_text(size = 10))
-#text = element_text(size = 25
+ggsave("Figures/300/scree.png",scree.plot, width =3.5, height = 3.5, dpi = 300)
 
 ```
 
@@ -689,6 +699,8 @@ EFA.MRFA::hullEFA(Rotter.EFA,extr = "ULS", index_hull = "CAF", display = TRUE, g
 hull <- ggplot2::last_plot()
 Hull <- hull+ ggtitle(NULL)+xlab("Factor Number (Hull Method)")+ylab("CAF")+ aes(color = '#DC000099')+geom_point(color ='#3C5488FF',size =1)+
   apatheme +theme(legend.position = "None") +scale_fill_identity()+  theme(axis.title.x = element_text(size = 10), axis.title.y = element_text(size = 10))
+
+ggsave("Figures/300/hull.png",Hull, width =3.5, height = 3.5, dpi = 300)
 
 ```
 
@@ -1519,6 +1531,8 @@ pacman::p_load(reshape,ggsci, ggrepel)
 tic <- tabledown::ggtestinfo(Rotter.one.IRT, unidimensional_fit)+apatheme+geom_area()+aes(fill =  "#E64B3599")+theme(legend.position = "none")+
 scale_fill_identity()+xlab(expression(theta))+ylab(expression(I(theta)))
 
+ggsave("Figures/300/tic.png",tic, width = 8, height = 6, dpi = 300, bg = "white")
+
 # +geom_vline(xintercept = 0, linetype="dashed")
 
 tic0 <-  tabledown::ggtestinfo(Rotter.one.IRT, unidimensional_fit)+apatheme+geom_area()+aes(fill =  "#E64B3599")
@@ -1686,7 +1700,7 @@ icc2 <- ggplot(l.format, aes(Theta, P.1, colour = item)) +
 geom_dl(aes(label = item), method = "angled.boxes", cex = 0.2)
 
 
-# ggsave("Figures/icc2.png",icc2, width = 8, height = 6, dpi = 1200, bg = "white")
+ggsave("Figures/300/icc2.png",icc, width = 8, height = 6, dpi = 300, bg = "white")
 
 
 
@@ -1715,6 +1729,39 @@ ggsave("Figures/TIFF/Fig5.tiff",icctic, width = 7, height = 7, dpi = 600)
 reliability <- plot(unidimensional_fit, type = 'rxx', theta_lim = c(-6, 6), 
       main="" )
 marginal.rel <- marginal_rxx(unidimensional_fit)
+
+```
+
+
+
+```{r}
+rotter.estimation <- as.vector(fscores(unidimensional_fit, method = "EAP",
+                                           full.scores = TRUE, 
+                                           full.scores.SE = F))
+library(RColorBrewer)
+rotter.e <- as.data.frame(rotter.estimation)
+
+
+estimation <- rotter.e
+
+
+
+
+threshold <- unidimensional_items[,1:2]
+
+itemlevelcolors <- brewer.pal(11, "Paired")
+
+jpeg("Figures/300/wm.png", width = 1600, height = 750)
+WrightMap::wrightMap(estimation, threshold, 
+          item.prop = 0.65,
+          main.title = "Rotter's I-E Scale",
+          dim.names = "Personal Control Vs Luck",
+          thr.sym.col.fg = itemlevelcolors,
+          thr.sym.col.bg = itemlevelcolors,
+          vertLines = TRUE,
+          show.thr.lab = T,
+          dim.color = brewer.pal(5, "Set3"))
+dev.off()
 
 ```
 
