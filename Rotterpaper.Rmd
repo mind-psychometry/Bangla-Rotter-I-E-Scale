@@ -65,7 +65,7 @@ mainfont: Arial
 ```{r dependencymanager, eval=FALSE, warning=FALSE, include=FALSE}
 knitr::opts_chunk$set(warning = F, error = F, message = F)
 
-renv::init()
+# renv::init()
 ```
 
 
@@ -132,12 +132,12 @@ apatheme=theme_bw()+
         panel.grid.minor = element_blank(),
         panel.background = element_blank(),
         #text=element_text(family = "Helvetica"),
-        axis.text.x = element_text(size = 15),
-        axis.text.y = element_text(size = 15),
-        axis.title.x = element_text(size = 15),
-        axis.title.y = element_text(size = 15),
-        plot.title = element_text(size = 15),
-        legend.text = element_text(size = 15),
+        axis.text.x = element_text(size = 10),
+        axis.text.y = element_text(size = 10),
+        axis.title.x = element_text(size = 10),
+        axis.title.y = element_text(size = 10),
+        plot.title = element_text(size = 10),
+        legend.text = element_text(size = 10),
         legend.title=element_blank(),
         axis.line.x = element_line(color='black'),
         axis.line.y = element_line(color='black'),
@@ -545,12 +545,14 @@ corplot1 <- psych::corPlot(correlations$rho, diag =F, scale=T,
 
 p.mat <- correlation::cor_to_p(correlations$rho, 300, method = "tetrachoric")
 
-corplot <- ggcorrplot::ggcorrplot(correlations$rho, p.mat=p.mat$p, insig = "pch", hc.order = FALSE, outline.col = "white", type = "lower", legend.title = "Correlation",sig.level = 0.05, pch.cex=1.8,
+corplot <- ggcorrplot::ggcorrplot(correlations$rho, p.mat=p.mat$p, insig = "pch", hc.order = FALSE, outline.col = "white", type = "lower", legend.title = "Correlation",sig.level = 0.05, pch.cex=1.5,
                       # insig = "blank",
            ggtheme = ggplot2::theme_minimal(),tl.srt = 90,colors = c("#E64B35FF", "white", "#3C5488FF") )+
   theme( panel.grid.major = element_blank(),
-         axis.text.x = element_text(size = 8),
-         axis.text.y = element_text(size = 8),
+         axis.text.x = element_text(size = 7),
+         axis.text.y = element_text(size = 7),
+         legend.text=element_text(size=7),
+         legend.title=element_text(size=7),
          panel.border = element_rect(color = "black",
                                     fill = NA,
                                     size = 1))
@@ -560,15 +562,15 @@ corplot <- ggcorrplot::ggcorrplot(correlations$rho, p.mat=p.mat$p, insig = "pch"
    
 #p.mat <- cor_to_p(correlations$rho, 428, method = "polychoric")
 #to show pvalue in the fig add p.mat=p.mat
-ggsave("figures/300/corplot.png",corplot, width = 3.5, height = 3.5, dpi = 300, bg ="white")
-ggsave("figures/300/corplot.pdf",corplot, width = 3.5, height = 3.5, dpi = 300, bg ="white")
-
-ggsave("figures/600/corplot.png",corplot, width = 3.5, height = 3.5, dpi = 600, bg ="white")
-ggsave("figures/600/corplot.pdf",corplot, width = 3.5, height = 3.5, dpi = 600, bg ="white")
-
-ggsave("figures/TIFF/Fig12.tiff",corplot, width = 3.5, height = 3.5, dpi = 600, bg ="white",compression = "lzw+p")
-
-tiff("figures/TIFF/outfile.tif",corplot, compression = "lzw",width = 3.5,units = "in", height = 3.5, res=300)
+ggsave("figures/300/Figure1.png",corplot, width = 3.5, height = 3.5, dpi = 300, bg ="white")
+# ggsave("figures/300/corplot.pdf",corplot, width = 3.5, height = 3.5, dpi = 300, bg ="white")
+# 
+# ggsave("figures/600/corplot.png",corplot, width = 3.5, height = 3.5, dpi = 600, bg ="white")
+# ggsave("figures/600/corplot.pdf",corplot, width = 3.5, height = 3.5, dpi = 600, bg ="white")
+# 
+# ggsave("figures/TIFF/Fig12.tiff",corplot, width = 3.5, height = 3.5, dpi = 600, bg ="white",compression = "lzw+p")
+# 
+# tiff("figures/TIFF/outfile.tif",corplot, compression = "lzw",width = 3.5,units = "in", height = 3.5, res=300)
 
 
 ```
@@ -577,7 +579,7 @@ tiff("figures/TIFF/outfile.tif",corplot, compression = "lzw",width = 3.5,units =
 
 ```{r figCor, out.height="150%",out.width="100%", fig.align= 'center', fig.cap='(ref:figCor)', results='asis', fig.align='center'}
 
-knitr::include_graphics('figures/600/corplot.png', dpi =600)
+knitr::include_graphics('figures/300/Figure1.png', dpi =600)
 
 ```
 
@@ -655,10 +657,10 @@ parallel = ggplot(Adjusted.EV, aes(x=num, y=eigenvalue, shape=type, color=type))
    #Label the x-axis 'Factor Number', and ensure that it ranges from 1-max # of factors, increasing by one with each 'tick' mark.
   scale_x_continuous(name='Factor Number (Parallel Analysis)', limits=c(0, 24),breaks=seq(0,24,4))+
     #Add vertical line indicating parallel analysis suggested max # of factors to retain
-  geom_hline(yintercept=1, linetype = 'dashed') + apatheme +theme(,legend.position = "None")   + 
+  geom_hline(yintercept=1, linetype = 'dashed') + apatheme +theme(legend.position = "None")   + 
   theme(axis.title.x = element_text(size = 10),
         axis.title.y = element_text(size = 10))
-ggsave("Figures/300/parallel.png",parallel, width =3.5, height = 3.5, dpi = 300)
+# ggsave("Figures/300/parallel.png",parallel, width =3.5, height = 3.5, dpi = 300)
 
 ```
 
@@ -689,7 +691,7 @@ scree.plot <-ggplot(FA.Scree, aes(x=num, y=eigenvalue,color=type, shape=type))+
   scale_x_continuous(name='Factor Number (Scree Plot)', limits=c(0, 12),breaks=seq(0,12,4))+
   geom_hline(yintercept=1, linetype = 'dashed') + apatheme +theme(legend.position = "None") +  theme(axis.title.x = element_text(size = 10),
         axis.title.y = element_text(size = 10))
-ggsave("Figures/300/scree.png",scree.plot, width =3.5, height = 3.5, dpi = 300)
+# ggsave("Figures/300/scree.png",scree.plot, width =3.5, height = 3.5, dpi = 300)
 
 ```
 
@@ -701,28 +703,28 @@ hull <- ggplot2::last_plot()
 Hull <- hull+ ggtitle(NULL)+xlab("Factor Number (Hull Method)")+ylab("CAF")+ aes(color = '#DC000099')+geom_point(color ='#3C5488FF',size =1)+
   apatheme +theme(legend.position = "None") +scale_fill_identity()+  theme(axis.title.x = element_text(size = 10), axis.title.y = element_text(size = 10))
 
-ggsave("Figures/300/hull.png",Hull, width =3.5, height = 3.5, dpi = 300)
+# ggsave("Figures/300/hull.png",Hull, width =3.5, height = 3.5, dpi = 300)
 
 ```
 
 ```{r FAperp, include=F}
-factor <- cowplot::plot_grid(parallel, scree.plot,Hull, labels = "AUTO",ncol=1, label_size = 15,align = "v", 
+factor <- cowplot::plot_grid(parallel, scree.plot,Hull, labels = c("(A)","(B)","(C)"),ncol=1, label_size = 15,align = "v", 
                   # label_fontfamily = "Arial",
                   label_fontface = "plain")
-ggsave("Figures/300/factors.png",factor, width =3.5, height = 7, dpi = 300)
-ggsave("Figures/300/factors.pdf",factor, width =4, height = 7, dpi = 300)
-
-
-ggsave("Figures/600/factors.png",factor, width =3.5, height = 7, dpi = 600)
-ggsave("Figures/600/factors.pdf",factor, width =3.5, height = 7, dpi = 600)
-ggsave("Figures/TIFF/Fig2.tiff",factor, width =3.5, height = 7, dpi = 600)
+ggsave("Figures/300/Figure2.png",factor, width =3.5, height = 7, dpi = 300)
+# ggsave("Figures/300/factors.pdf",factor, width =4, height = 7, dpi = 300)
+# 
+# 
+# ggsave("Figures/600/factors.png",factor, width =3.5, height = 7, dpi = 600)
+# ggsave("Figures/600/factors.pdf",factor, width =3.5, height = 7, dpi = 600)
+# ggsave("Figures/TIFF/Fig2.tiff",factor, width =3.5, height = 7, dpi = 600)
 
 ```
 
 
 ```{r facIdFig, out.height="100%", out.width="100%",fig.align='center', fig.cap='Factor Identification (A) Parallel analysis (B) Scree Plot (C) Hull Method',  warning=FALSE, results= 'asis'}
 
-knitr::include_graphics('Figures/600/factors.png', dpi =600)
+knitr::include_graphics('Figures/300/Figure2.png', dpi =600)
 
 
 ```
@@ -1632,17 +1634,17 @@ personfit <- ggplot(unidimensional.personfit, aes(x=Zh)) + geom_histogram(binwid
   labs( y="Number of Participants", x = "Zh Statistics")+apatheme
 
 
-ggsave("Figures/300/personfit.png",personfit, width = 3.5, height = 3.5, dpi = 300, bg = "white")
-ggsave("Figures/300/personfit.pdf",personfit, width = 3.5, height = 3.5, dpi = 300, bg = "white")
-
-ggsave("Figures/600/personfit.png",personfit, width = 3.5, height = 3.5, dpi = 600, bg = "white")
-ggsave("Figures/600/personfit.pdf",personfit, width = 3.5, height = 3.5, dpi = 600, bg = "white")
-ggsave("Figures/TIFF/Fig4.tiff",personfit, width = 3.5, height = 3.5, dpi = 600, bg = "white")
+ggsave("Figures/300/Figure4.png",personfit, width = 3.5, height = 3.5, dpi = 300, bg = "white")
+# ggsave("Figures/300/personfit.pdf",personfit, width = 3.5, height = 3.5, dpi = 300, bg = "white")
+# 
+# ggsave("Figures/600/personfit.png",personfit, width = 3.5, height = 3.5, dpi = 600, bg = "white")
+# ggsave("Figures/600/personfit.pdf",personfit, width = 3.5, height = 3.5, dpi = 600, bg = "white")
+# ggsave("Figures/TIFF/Fig4.tiff",personfit, width = 3.5, height = 3.5, dpi = 600, bg = "white")
 
 ```
 
 ```{r figfmisfit, fig.cap= "Distribution of the Zh statistic of 2PL model" }
-knitr::include_graphics('Figures/600/personfit.png', dpi =600)
+knitr::include_graphics('Figures/300/Figure4.png', dpi =600)
 ```
 
 Person fit indicates the validity and meaningfulness of the fitted model at the participants latent trait level [@RN1274]. We estimated the person fit statistics using standardized fit index Zh statistics [@drasgow1985appropriateness]. Zh \< -2 should be considered as a misfit. Fig\@ref(fig:figfmisfit) indicates that Zh is larger than -2 for most participants, suggesting a good fit of the selected IRT model.
@@ -1716,14 +1718,14 @@ ifc <- ggplot(item.info.data.2,aes(Theta,value,col=variable, label = variable))+
   xlab(expression(theta)) + 
   ylab(expression(I(theta)))
 
-ggsave("Figures/300/ifc.png",ifc, width = 7, height = 8, dpi = 300, bg = "white")
-ggsave("Figures/300/ifc.pdf",ifc, width = 7, height = 8, dpi = 300, bg = "white")
-
-ggsave("Figures/600/ifc.png",ifc, width = 7, height = 8, dpi = 600, bg = "white")
-ggsave("Figures/600/ifc.pdf",ifc, width = 7, height = 8, dpi = 600, bg = "white")
-
-
-ggsave("Figures/TIFF/Fig6.tiff",ifc, width = 7, height = 8, dpi = 600, bg = "white")
+ggsave("Figures/300/Figure6.png",ifc, width = 7, height = 8, dpi = 300, bg = "white")
+# ggsave("Figures/300/ifc.pdf",ifc, width = 7, height = 8, dpi = 300, bg = "white")
+# 
+# ggsave("Figures/600/ifc.png",ifc, width = 7, height = 8, dpi = 600, bg = "white")
+# ggsave("Figures/600/ifc.pdf",ifc, width = 7, height = 8, dpi = 600, bg = "white")
+# 
+# 
+# ggsave("Figures/TIFF/Fig6.tiff",ifc, width = 7, height = 8, dpi = 600, bg = "white")
 
 
 #plot(unidimensional_fit, type = "trace", facet =F, main = "(A)") #item cha. curve
@@ -1832,7 +1834,7 @@ icc2 <- ggplot(l.format, aes(Theta, P.1, colour = item)) +
 geom_dl(aes(label = item), method = "angled.boxes", cex = 0.2)
 
 
-ggsave("Figures/300/icc2.png",icc, width = 8, height = 6, dpi = 300, bg = "white")
+# ggsave("Figures/300/icc2.png",icc, width = 8, height = 6, dpi = 300, bg = "white")
 
 
 
@@ -1841,19 +1843,19 @@ ggsave("Figures/300/icc2.png",icc, width = 8, height = 6, dpi = 300, bg = "white
 
 ```{r, include =F}
 icctic <- cowplot::plot_grid(icc2, tic, 
-                   labels = "AUTO",
+                   labels = c("(A)", "(B)"),
                    ncol=1, 
                   align = "h", 
                   # label_fontfamily = "Arial",
                   label_fontface = "plain")
 
-ggsave("Figures/300/icc_tic.png",icctic, width = 7, height = 7, dpi = 300)
-ggsave("Figures/300/icc_tic.pdf",icctic, width = 7, height = 7, dpi = 300)
-
-ggsave("Figures/600/icc_tic.png",icctic, width = 7, height = 7, dpi = 600)
-ggsave("Figures/600/icc_tic.pdf",icctic, width = 7, height = 7, dpi = 600)
-
-ggsave("Figures/TIFF/Fig5.tiff",icctic, width = 7, height = 7, dpi = 600)
+ggsave("Figures/300/Figure5.png", width = 7, height = 7, dpi = 300, bg = "white")
+# ggsave("Figures/300/icc_tic.pdf",icctic, width = 7, height = 7, dpi = 300)
+# 
+# ggsave("Figures/600/icc_tic.png",icctic, width = 7, height = 7, dpi = 600)
+# ggsave("Figures/600/icc_tic.pdf",icctic, width = 7, height = 7, dpi = 600)
+# 
+# ggsave("Figures/TIFF/Fig5.tiff",icctic, width = 7, height = 7, dpi = 600)
 
 ```
 
