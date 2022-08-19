@@ -175,6 +175,7 @@ data <- readRDS("WRotter.rds")
 Rotter.EFA <- data[1:300,11:33]
 efa.descriptives <- data[1:300,c(3,4,5,6,7,8)]
 Rotter.CFA <- data[301:478, 11:33]
+Rotter.invariance <- data[301:478, c(4,11:33)]
 cfa.descriptives <- data[301:478,c(3,4,5,6,7,8)]
 WRotter.IRT <- data[,11:33]
 irt.descriptives <- data[,c(3,4,5,6,7,8)]
@@ -533,7 +534,7 @@ fviz_screeplot(pca, addlabels = T, max.overlaps = Inf, ylim =c(0,15),  main = NU
 
 
 
-```{r eval=FALSE, include=FALSE}
+```{r include=FALSE}
 correlations <- tetrachoric(gt.data,smooth=TRUE)
 qgraph::qgraph(correlations$rho, cut =.30, details =T, posCol = "green", negCol = "orangered3", 
        labels = names(Rotter.EFA))
@@ -789,7 +790,7 @@ abline(h = 21, lwd = 2, lty = 2)
 abline(v =.1,lwd = 2, lty = 2)
 
 
-omega.two <- omega(reduced.model.2F.5, nfactors=3, fm="wls",n.iter=1,p=.05,poly=FALSE,key=NULL,  flip=TRUE,digits=2, title="Omega",sl=TRUE,labels=NULL,plot=TRUE,n.obs=NA,rotate="oblimin",Phi=NULL,option="equal",covar=FALSE)
+omega.two <- omega(reduced.model.2F.5, nfactors=2, fm="wls",n.iter=1,p=.05,poly=FALSE,key=NULL,  flip=TRUE,digits=2, title="Omega",sl=TRUE,labels=NULL,plot=TRUE,n.obs=NA,rotate="oblimin",Phi=NULL,option="equal",covar=FALSE)
 ```
 
 
@@ -1120,6 +1121,137 @@ One.factor.Cfa.mod.fit <- fitmeasures (Rotter.one.fit.2,c("gfi", "agfi", "nfi","
                               "srmr","aic"))
 
 One.factor.reliability.mod <- semTools::reliability(Rotter.one.fit.2)
+
+```
+
+```{r Shortcut-Invariance, eval=FALSE, include=FALSE}
+library("semTools")
+
+Rotter.one.2 <- "LOC =~ item18 + item25 +item11 + item15 + item16 + item10 +item9 + item13 + item5 + item28 + item4"
+
+invariance.model <- measurementInvariance(model = Rotter.one.2,
+                                          data = Rotter.invariance,
+                                          group = "Gender",
+                                          ordered = names(Rotter.invariance),
+                                          estimator = "WLSMV",
+                                          strict = T)
+
+
+
+
+invariance.model[[1]] #configural Invariance
+invariance.model[[2]] # loading, weak, metric
+invariance.model[[3]] # intercept, strong, scaler
+invariance.model[[4]] # residual, strict
+invariance.model[[5]] # means, structural invariance
+```
+
+```{r Invariancedetail, eval=FALSE, include=FALSE}
+#Creating a function to avoid class with summary output
+# summary.FitDiff<-function(object){
+#           print(object@nested)
+#           return(object@fit)
+# }
+
+
+# Configural invariance ####
+
+Rotter.one.2 <- "LOC =~ item18 + item25 +item11 + item15 + item16 + item10 +item9 + item13 + item5 + item28 + item4"
+
+
+configural <- cfa(model = Rotter.one.2,,
+                  data = Rotter.invariance,
+                  group = "Gender",
+                  ordered = names(Rotter.invariance),
+                  estimator = "WLSMV")
+
+summary(configural, fit.measures =TRUE,standardized = TRUE, rsq =TRUE)
+
+fitmeasures (configural,c("gfi", "agfi", "nfi","rfi", 
+                       "cfi","tli",
+                       "rmsea", "rmsea.ci.lower", "rmsea.ci.upper","srmr"))
+
+#Metric
+weak <- cfa(model = Rotter.one.2,,
+                  data = Rotter.invariance,
+                  group = "Gender",
+                  ordered = names(Rotter.invariance),
+                  estimator = "WLSMV", 
+            group.equal = "loadings")
+            
+summary(weak, fit.measures =TRUE,standardized = TRUE, rsq =TRUE)
+
+
+fitmeasures (weak,c("gfi", "agfi", "nfi","rfi", 
+                       "cfi","tli",
+                       "rmsea", "rmsea.ci.lower", "rmsea.ci.upper","srmr"))
+
+First.comp <- compareFit (configural, weak)
+summary(First.comp)
+
+
+
+#Scaler
+strong <- cfa(Rotter.one.2,,
+                  data = Rotter.invariance,
+                  group = "Gender",
+                  ordered = names(Rotter.invariance),
+                  estimator = "WLSMV", 
+              group.equal = c("loadings", "intercepts"))
+summary(strong, fit.measures =TRUE,standardized = TRUE, rsq =TRUE)
+
+Second.comp <- compareFit  (weak, strong)
+summary(Second.comp)
+
+#residual
+strict <- cfa(Rotter.one.2,,
+                  data = Rotter.invariance,
+                  group = "Gender",
+                  ordered = names(Rotter.invariance),
+                  estimator = "WLSMV", 
+              group.equal = c("loadings", "intercepts", "residuals")) 
+
+summary(strict, fit.measures =TRUE,standardized = TRUE, rsq =TRUE)
+fitmeasures (strict,c("gfi", "agfi", "nfi","rfi", "cfi","tli","rmsea", "srmr","aic"))
+
+Third.comp <- compareFit(strict,strong)
+summary(Third.comp)
+#structural
+structural <-cfa(Rotter.one.2,,
+                  data = Rotter.invariance,
+                  group = "Gender",
+                  ordered = names(Rotter.invariance),
+                  estimator = "WLSMV", 
+                 group.equal = c("loadings", "intercepts", "residuals", "means","lv.variances","lv.covariances"))
+
+summary(structural, fit.measures =TRUE,standardized = TRUE, rsq =TRUE)
+fitmeasures (structural,c("gfi", "agfi", "nfi","rfi", "cfi","tli","rmsea", "srmr","aic"))
+
+fourth.comp <- compareFit  (structural,strict)
+summary(fourth.comp)
+comfit.par <- compareFit(configural, weak, strong, strict)
+summary (comfit.par)
+
+models <-  list("Configural" = configural, 
+                "Metric" = weak, 
+                "Scalar" = strong, 
+                "Residual" = strict)
+
+
+
+Invariance.table <- semTable::compareLavaan(models,
+              nesting = "Configural > Metric > Scalar > Residual", 
+              fitmeas = c("chisq.scaled", "df",  "cfi","tli","rmsea", "rmsea.ci.lower.scaled", "rmsea.ci.upper.scaled" ),
+              scaled = T,
+              chidif = T, digits = 2)
+
+colnames(Invariance.table) <- c("Chi-Square", "df", "CFI", "TLI", "RMSEA", "RMSEA 90% Lower CI", "RMSEA 90% Upper", "Chi-Square Difference", "df difference*", "p")
+
+
+```
+
+```{r InvarianceTab, eval=FALSE, include=FALSE, results='asis'}
+apa_table(Invariance.table, align = "c",  caption = "Invariance Analysis", note = " a = Metric vs Configural; b = Scalar vs Metric; c = Residual vs Scalar; d = Structural vs Residual;* =  df of model comparison", landscape = T, font_size = "footnotesize" )
 
 ```
 
