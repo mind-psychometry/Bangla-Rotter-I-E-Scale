@@ -109,6 +109,8 @@ library(mirt)
 library(lavaan)
 library(SimDesign)
 library(gtsummary)
+library(gt)
+
 r_refs("Rotter-References.bib", append = TRUE,tweak = TRUE)
 #library(remedy)# word formatting shortcut
 #library(gramr) #grammer
@@ -562,7 +564,7 @@ corplot <- ggcorrplot::ggcorrplot(correlations$rho, p.mat=p.mat$p, insig = "pch"
    
 #p.mat <- cor_to_p(correlations$rho, 428, method = "polychoric")
 #to show pvalue in the fig add p.mat=p.mat
-ggsave("figures/300/Figure1.png",corplot, width = 3.5, height = 3.5, dpi = 300, bg ="white")
+ggsave("figures/300/Figure1.jpg",corplot, width = 3.5, height = 3.5, dpi = 300, bg ="white")
 # ggsave("figures/300/corplot.pdf",corplot, width = 3.5, height = 3.5, dpi = 300, bg ="white")
 # 
 # ggsave("figures/600/corplot.png",corplot, width = 3.5, height = 3.5, dpi = 600, bg ="white")
@@ -579,7 +581,7 @@ ggsave("figures/300/Figure1.png",corplot, width = 3.5, height = 3.5, dpi = 300, 
 
 ```{r figCor, out.height="150%",out.width="100%", fig.align= 'center', fig.cap='(ref:figCor)', results='asis', fig.align='center'}
 
-knitr::include_graphics('figures/300/Figure1.png', dpi =600)
+knitr::include_graphics('figures/300/Figure1.jpg', dpi =600)
 
 ```
 
@@ -711,7 +713,7 @@ Hull <- hull+ ggtitle(NULL)+xlab("Factor Number (Hull Method)")+ylab("CAF")+ aes
 factor <- cowplot::plot_grid(parallel, scree.plot,Hull, labels = c("(A)","(B)","(C)"),ncol=1, label_size = 15,align = "v", 
                   # label_fontfamily = "Arial",
                   label_fontface = "plain")
-ggsave("Figures/300/Figure2.png",factor, width =3.5, height = 7, dpi = 300)
+ggsave("Figures/300/Figure2.jpg",factor, width =3.5, height = 7, dpi = 300)
 # ggsave("Figures/300/factors.pdf",factor, width =4, height = 7, dpi = 300)
 # 
 # 
@@ -724,7 +726,7 @@ ggsave("Figures/300/Figure2.png",factor, width =3.5, height = 7, dpi = 300)
 
 ```{r facIdFig, out.height="100%", out.width="100%",fig.align='center', fig.cap='Factor Identification (A) Parallel analysis (B) Scree Plot (C) Hull Method',  warning=FALSE, results= 'asis'}
 
-knitr::include_graphics('Figures/300/Figure2.png', dpi =600)
+knitr::include_graphics('Figures/300/Figure2.jpg', dpi =600)
 
 
 ```
@@ -1149,6 +1151,7 @@ invariance.model[[5]] # means, structural invariance
 ```
 
 ```{r Invariancedetail, eval=FALSE, include=FALSE}
+library(lavaan)
 #Creating a function to avoid class with summary output
 # summary.FitDiff<-function(object){
 #           print(object@nested)
@@ -1188,8 +1191,14 @@ fitmeasures (weak,c("gfi", "agfi", "nfi","rfi",
                        "cfi","tli",
                        "rmsea", "rmsea.ci.lower", "rmsea.ci.upper","srmr"))
 
+summary.FitDiff<-function(object){
+          print(object@nested)
+          return(object@fit)
+}
+
+
 First.comp <- compareFit (configural, weak)
-summary(First.comp)
+summary.FitDiff(First.comp)
 
 
 
@@ -1203,7 +1212,7 @@ strong <- cfa(Rotter.one.2,,
 summary(strong, fit.measures =TRUE,standardized = TRUE, rsq =TRUE)
 
 Second.comp <- compareFit  (weak, strong)
-summary(Second.comp)
+summary.FitDiff(Second.comp)
 
 #residual
 strict <- cfa(Rotter.one.2,,
@@ -1412,9 +1421,6 @@ semPaths (Rotter.one.fit.2 ,
 We have gathered satisfactory content validity evidence of Rotter's I-E scale in our first study by I-CVI and S-CVI. Our second study gathered structural validity evidence by confirming the one-factor solution obtained in the EFA. Lastly, we gathered convergent validity evidence based on correlational analysis among the total score of ICI [@RN1267], neuroticism, openness to experience [@RN1287] and Bangla Rotter's I-E scale
 
 
-
-
-
 ```{r include =F}
 library(MBESS)
 openness <- data %>% 
@@ -1583,7 +1589,7 @@ unidimensional_params <- coef(unidimensional_fit, IRTpars = TRUE, simplify = TRU
 
 unidimensional_items <- data.frame(unidimensional_params$items)
 
-unidimensional_se <- coef(unidimensional_fit, printSE = TRUE)
+unidimensional_se <-coef(unidimensional_fit, IRTpars = TRUE,printSE = TRUE)
 
 
 
@@ -1619,6 +1625,7 @@ papaja::apa_table(Correlation.uni$apa,
           note = "* p < 0.05; ** p < 0.01; *** p < 0.001",
           escape = TRUE)
 
+# mirt::plot(unidimensional_fit, type="infoSE")
 
 ```
 
@@ -1634,7 +1641,7 @@ personfit <- ggplot(unidimensional.personfit, aes(x=Zh)) + geom_histogram(binwid
   labs( y="Number of Participants", x = "Zh Statistics")+apatheme
 
 
-ggsave("Figures/300/Figure4.png",personfit, width = 3.5, height = 3.5, dpi = 300, bg = "white")
+ggsave("Figures/300/Figure4.jpg",personfit, width = 3.5, height = 3.5, dpi = 300, bg = "white")
 # ggsave("Figures/300/personfit.pdf",personfit, width = 3.5, height = 3.5, dpi = 300, bg = "white")
 # 
 # ggsave("Figures/600/personfit.png",personfit, width = 3.5, height = 3.5, dpi = 600, bg = "white")
@@ -1644,7 +1651,7 @@ ggsave("Figures/300/Figure4.png",personfit, width = 3.5, height = 3.5, dpi = 300
 ```
 
 ```{r figfmisfit, fig.cap= "Distribution of the Zh statistic of 2PL model" }
-knitr::include_graphics('Figures/300/Figure4.png', dpi =600)
+knitr::include_graphics('Figures/300/Figure4.jpg', dpi =600)
 ```
 
 Person fit indicates the validity and meaningfulness of the fitted model at the participants latent trait level [@RN1274]. We estimated the person fit statistics using standardized fit index Zh statistics [@drasgow1985appropriateness]. Zh \< -2 should be considered as a misfit. Fig\@ref(fig:figfmisfit) indicates that Zh is larger than -2 for most participants, suggesting a good fit of the selected IRT model.
@@ -1657,21 +1664,41 @@ apa_table(IRT.Description,landscape = F, caption = "IRT Description")
 
 We categorize the item discrimination in table\@ref(tab:tabIRT) using the following criteria of @RN1275, none = 0; very low =0.01 to 0.34; low = 0.35 to 0.64; moderate = 0.65 to 1.34 ; high = 1.35 to 1.69; very high \>1.70. Among the 11 items, 6 items showed moderate discrimination and one item showed high discrimination (item16). Three items (item 18, 25 & 11) had very high discrimination and one item (item 4) had low discrimination. All items were in the suggested guidelines of item discrimination parameter: 0.5$\le$ Item Discrimination $\le$ 2.0 (except items 18 & 4), and the item difficulty parameters: -3.0 $\le$ Item Difficult$\le$ 3.0 [@RN1275]. The relationship between participants' latent traits and the probability of responding to the preferred response option for the items is shown by the item characteristics curve (ICC) (Figure\@ref(fig:IIC)). For an easy item to have a probability of .50 a latent trait level $\theta$ = -1 is required for easy items, $\theta$ = 0 is required for moderate items and $\theta$ = 1 is required for hard items [@Desjardins]. Examination of the ICCs made it evident that our adapted scale contained all three types of items with item difficulty parameters ranging from -1.06 to 2.88, reflecting a sizable range of underlying locus of control trait.
 
-```{r irt-plots,  warning=FALSE}
+
+```{r itr-tic, include=F}
+ggtestinfo_se <- function(dataframe,model){
+  Theta <- matrix(seq(-6,6, by = .1))
+  T1 <- 0
+  se <- 0
+  for(i in 1:ncol(dataframe)){
+    T1 <- T1 + mirt::iteminfo(extract.item(model, i), Theta)
+    se <- 1/(sqrt(T1))
+    
+  }
+
+  data <- as.data.frame(cbind(Theta, T1, se))
+  p1 <-  ggplot2::ggplot(data, ggplot2::aes(x=Theta, y=T1)) +
+    ggplot2::geom_line() + ggplot2::labs(y="Test Information")+
+  geom_line(data = data,linetype = "dashed",color = "red", aes(x=Theta, y=se))
+  
+  return(p1)
+}
+
+tic <- ggtestinfo_se(Rotter.one.IRT, unidimensional_fit)+ylim(0,4)
+#Test-infor curve
+tic <- ggtestinfo_se(Rotter.one.IRT, unidimensional_fit)+ylim(0,4)+apatheme+geom_area()+aes(fill =  "#E64B3599")+theme(legend.position = "none")+
+scale_fill_identity()+xlab(expression(theta))+ylab(expression(I(theta)))
+
+
+
+```
+
+
+
+```{r irt-icc,  include=F,warning=FALSE}
 
 pacman::p_load(reshape,ggsci, ggrepel)
 
-#Test-infor curve
-tic <- tabledown::ggtestinfo(Rotter.one.IRT, unidimensional_fit)+apatheme+geom_area()+aes(fill =  "#E64B3599")+theme(legend.position = "none")+
-scale_fill_identity()+xlab(expression(theta))+ylab(expression(I(theta)))
-
-ggsave("Figures/300/tic.png",tic, width = 8, height = 6, dpi = 300, bg = "white")
-
-# +geom_vline(xintercept = 0, linetype="dashed")
-
-tic0 <-  tabledown::ggtestinfo(Rotter.one.IRT, unidimensional_fit)+apatheme+geom_area()+aes(fill =  "#E64B3599")
-tic2 <- plotly::ggplotly(tic0)
-# ggsave("Figures/TIC.png",tic, width = 8, height = 6, dpi = 1200, bg = "white")
 
 ##Item Extraction
 Theta <- matrix(seq(-6,6, by = .1))
@@ -1707,7 +1734,7 @@ item04 <- iteminfo(item04, Theta)
 item.info.data <- as.data.frame(cbind(item18,                                              item25,item11, item15, item16, item10, item09, item13, item05, item28, item04))
 
 
-item.info.data.long <- melt(item.info.data)
+item.info.data.long <- reshape::melt(item.info.data)
 item.info.data.2 <- data.frame(Theta=seq(-6,6, by = .1), item.info.data.long)
 
 #Item information curve
@@ -1718,7 +1745,7 @@ ifc <- ggplot(item.info.data.2,aes(Theta,value,col=variable, label = variable))+
   xlab(expression(theta)) + 
   ylab(expression(I(theta)))
 
-ggsave("Figures/300/Figure6.png",ifc, width = 7, height = 8, dpi = 300, bg = "white")
+ggsave("Figures/300/Figure6.jpg",ifc, width = 7, height = 8, dpi = 300, bg = "white")
 # ggsave("Figures/300/ifc.pdf",ifc, width = 7, height = 8, dpi = 300, bg = "white")
 # 
 # ggsave("Figures/600/ifc.png",ifc, width = 7, height = 8, dpi = 600, bg = "white")
@@ -1742,6 +1769,30 @@ ggplot(Ability.unidiemsionality, aes(x =Theta, y =Rawscore )) +
     theme_apa()
 ```
 
+```{r IRT-reliability, include=F}
+ggreliability <- function(dataframe,model){
+  Theta <- matrix(seq(-6,6, by = .1))
+  T1 <- 0
+  se <- 0
+  reliability <- 0
+  for(i in 1:ncol(dataframe)){
+    T1 <- T1 + mirt::iteminfo(extract.item(model, i), Theta)
+    reliability <- T1/(T1+1)
+  }
+
+  data <- as.data.frame(cbind(Theta, T1,  reliability))
+  p1 <-  ggplot2::ggplot(data, ggplot2::aes(x=Theta, y=reliability)) +ylim(0,1)+
+    ggplot2::geom_line() + ggplot2::labs(y="Reliability") +
+   xlab(expression(theta))+ylab(expression(r(theta)[xx]))
+
+  return(p1)
+}
+
+
+# r <- ggreliability(Rotter.one.IRT, unidimensional_fit)
+reliability <- ggreliability(Rotter.one.IRT, unidimensional_fit)+apatheme+geom_area(fill="#69b3a2")+theme(legend.position = "none")+
+scale_fill_identity()
+```
 
 ```{r icc}
 
@@ -1842,27 +1893,23 @@ geom_dl(aes(label = item), method = "angled.boxes", cex = 0.2)
 
 
 ```{r, include =F}
-icctic <- cowplot::plot_grid(icc2, tic, 
-                   labels = c("(A)", "(B)"),
+icctic <- cowplot::plot_grid(icc2, tic, reliability,
+                   labels = c("(A)", "(B)", "(C)"),
                    ncol=1, 
                   align = "h", 
                   # label_fontfamily = "Arial",
                   label_fontface = "plain")
 
-ggsave("Figures/300/Figure5.png", width = 7, height = 7, dpi = 300, bg = "white")
-# ggsave("Figures/300/icc_tic.pdf",icctic, width = 7, height = 7, dpi = 300)
-# 
-# ggsave("Figures/600/icc_tic.png",icctic, width = 7, height = 7, dpi = 600)
-# ggsave("Figures/600/icc_tic.pdf",icctic, width = 7, height = 7, dpi = 600)
-# 
-# ggsave("Figures/TIFF/Fig5.tiff",icctic, width = 7, height = 7, dpi = 600)
-
+ggsave("Figures/300/Figure5.jpg", width = 7, height = 9, dpi = 300, bg = "white")
 ```
 
 ```{r, include =F}
+
 reliability <- plot(unidimensional_fit, type = 'rxx', theta_lim = c(-6, 6), 
       main="" )
 marginal.rel <- marginal_rxx(unidimensional_fit)
+
+
 
 ```
 
@@ -1904,13 +1951,13 @@ Item information curve (IIC) and test information curve (TIC) indicate the amoun
 
 
 ```{r FigTIC, fig.cap= "Item Information Curves of Bangla Rotter’s I-E Scale. Item 18 carried the highest level of information across the theta continuum and item 04 carried the lowest information"}
-  knitr::include_graphics('Figures/600/ifc.png', dpi =600)
+  knitr::include_graphics('Figures/300/Figure6.jpg', dpi =600)
 
 ```
 
 
 ```{r figICC, fig.cap= "(A) Item Characteristic Curves (ICC) of the 11 items of the Bangla Rotter I-E scale. ICC indicates Bangla Rotter I-E scale is composed of items with easy, moderate and hard items. (B) Test information Curve. The peak of the curve centered near the center of the continuum between the theta range -1 to 0." }
-knitr::include_graphics('Figures/600/icc_tic.png', dpi =600)
+knitr::include_graphics('Figures/300/Figure5.jpg', dpi =600)
 ```
 
 # General Discussion
