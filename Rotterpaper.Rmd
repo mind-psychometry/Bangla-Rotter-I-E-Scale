@@ -1664,6 +1664,23 @@ apa_table(IRT.Description,landscape = F, caption = "IRT Description")
 
 We categorize the item discrimination in table\@ref(tab:tabIRT) using the following criteria of @RN1275, none = 0; very low =0.01 to 0.34; low = 0.35 to 0.64; moderate = 0.65 to 1.34 ; high = 1.35 to 1.69; very high \>1.70. Among the 11 items, 6 items showed moderate discrimination and one item showed high discrimination (item16). Three items (item 18, 25 & 11) had very high discrimination and one item (item 4) had low discrimination. All items were in the suggested guidelines of item discrimination parameter: 0.5$\le$ Item Discrimination $\le$ 2.0 (except items 18 & 4), and the item difficulty parameters: -3.0 $\le$ Item Difficult$\le$ 3.0 [@RN1275]. The relationship between participants' latent traits and the probability of responding to the preferred response option for the items is shown by the item characteristics curve (ICC) (Figure\@ref(fig:IIC)). For an easy item to have a probability of .50 a latent trait level $\theta$ = -1 is required for easy items, $\theta$ = 0 is required for moderate items and $\theta$ = 1 is required for hard items [@Desjardins]. Examination of the ICCs made it evident that our adapted scale contained all three types of items with item difficulty parameters ranging from -1.06 to 2.88, reflecting a sizable range of underlying locus of control trait.
 
+```{r item-difficulty-cat, include =F}
+very_easy <-  sum(unidimensional_items$b< -2)
+easy=  sum(-2<unidimensional_items$b &  unidimensional_items$b<= -0.50)
+medium= sum(-0.51<unidimensional_items$b &  unidimensional_items$b<= 0.50)
+hard= sum(.51<unidimensional_items$b &  unidimensional_items$b<= 2) 
+very_hard =sum(unidimensional_items$b> 2)
+
+very_easy_items <- unidimensional_items[which(unidimensional_items$b< -2),]
+easy_items <- unidimensional_items[which(-2<unidimensional_items$b &  unidimensional_items$b<= -0.50),]
+medium_items <-unidimensional_items[which(-0.51<unidimensional_items$b &  unidimensional_items$b<= 0.50),]
+hard_items <-unidimensional_items[which(.51<unidimensional_items$b &  unidimensional_items$b<= 2),]
+very_hard_items <-unidimensional_items[which(unidimensional_items$b> 2),]
+
+
+```
+
+
 
 ```{r itr-tic, include=F}
 ggtestinfo_se <- function(dataframe,model){
