@@ -7,14 +7,16 @@ This is the repository for the reproducible manuscript of **"Psychometric evalua
 ### File
 ---------------
 
-- **README.md:: This file contains necessary information of the project
+- **README.md**: This file contains necessary information of the project
+- **LICENSE**
 - **Rotterpaper.RMD**: A reproducible manuscript with all analysis code.
 - **Wrotter.rds**: De-identified raw data used in this study.
-
 - **Bangla-Rotter-I-E-Scale-Manuscript.Rproj**: This is the R project file.
+
+
 ### Folder
 --------------
-- **Figures**: A folder withh all figures used in the Manuscript.
+- **Figures/300**: A folder with all figures used in the Manuscript.
 - **renv** : This folder contains all necessary information of the relevant R-packages used in the manuscript. This folder will help you get all required R-packages in your environment. Just use `renv:restore` in your consol to install all required packages automatically.
 - **renv.lock**: Lockfile for renv package initiation.
 - **Rotter-References.bib**: A bibTeX file with all references used in the manuscript.
