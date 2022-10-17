@@ -6,9 +6,9 @@ This is the repository for the reproducible manuscript of **"Psychometric evalua
 
 ### File
 
-
 - **README.md**: This file contains necessary information of the project
 - **LICENSE**
+- **English & Bangla Rotter's I-E Scale.pdf**
 - **Rotterpaper.Rmd**: A reproducible manuscript with all analysis code.
 - **Wrotter.rds**: De-identified raw data used in this study.
 - **Bangla-Rotter-I-E-Scale-Manuscript.Rproj**: This is the R project file.
