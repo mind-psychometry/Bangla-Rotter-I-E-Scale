@@ -2,7 +2,7 @@
 \ifnextchar[{\eatarg}{}
 
 
-{\centering \includegraphics[width=1\linewidth,height=1.5\textheight]{figures/600/corplot}
+{\centering \includegraphics[width=1\linewidth,height=1.5\textheight]{figures/300/Figure1}
 
 }
 
@@ -12,7 +12,7 @@
 \ifnextchar[{\eatarg}{}
 
 
-{\centering \includegraphics[width=1\linewidth,height=1\textheight]{Figures/600/factors}
+{\centering \includegraphics[width=1\linewidth,height=1\textheight]{Figures/300/Figure2}
 
 }
 
@@ -26,15 +26,15 @@
 \begin{figure*}[hbt]
 \ifnextchar[{\eatarg}{}
 
-\includegraphics[width=3.5in]{Figures/600/personfit} \caption{Distribution of the Zh statistic of 2PL model}\label{fig:figfmisfit}
+\includegraphics[width=1.75in]{Figures/300/Figure4} \caption{Distribution of the Zh statistic of 2PL model}\label{fig:figfmisfit}
 \end{figure*}
 \begin{figure*}[hbt]
 \ifnextchar[{\eatarg}{}
 
-\includegraphics[width=7in]{Figures/600/ifc} \caption{Item Information Curves of Bangla Rotter’s I-E Scale. Item 18 carried the highest level of information across the theta continuum and item 04 carried the lowest information}\label{fig:FigTIC}
+\includegraphics[width=3.5in]{Figures/300/Figure6} \caption{Item Information Curves of Bangla Rotter’s I-E Scale. Item 18 carried the highest level of information across the theta continuum and item 04 carried the lowest information}\label{fig:FigTIC}
 \end{figure*}
 \begin{figure*}[hbt]
 \ifnextchar[{\eatarg}{}
 
-\includegraphics[width=7in]{Figures/600/icc_tic} \caption{(A) Item Characteristic Curves (ICC) of the 11 items of the Bangla Rotter I-E scale. ICC indicates Bangla Rotter I-E scale is composed of items with easy, moderate and hard items. (B) Test information Curve. The peak of the curve centered near the center of the continuum between the theta range -1 to 0.}\label{fig:figICC}
+\includegraphics[width=3.5in]{Figures/300/Figure5} \caption{(A) Item Characteristic Curves (ICC) of the 11 items of the Bangla Rotter I-E scale. ICC indicates Bangla Rotter I-E scale is composed of items with easy, moderate and hard items. (B) Test information Curve. The peak of the curve centered near the center of the continuum between the theta range -1 to 0.}\label{fig:figICC}
 \end{figure*}

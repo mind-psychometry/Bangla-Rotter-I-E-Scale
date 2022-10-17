@@ -62,14 +62,14 @@ mainfont: Arial
 ---
 
 
-```{r dependencymanager, eval=FALSE, warning=FALSE, include=FALSE}
+```{r dependencymanager, warning=FALSE, include=FALSE}
 knitr::opts_chunk$set(warning = F, error = F, message = F)
 
-# renv::init()
+
 ```
 
 
-```{r eval=FALSE, include=FALSE}
+```{r install-pack, eval=FALSE, include=FALSE}
 #if "packrat" doesnot work you can run this chunk manually to get all required packs"
 
 install.packages("devtools")
@@ -99,6 +99,9 @@ install.packages("gtsummary")
 ```
 
 ```{r setup, include = FALSE}
+#This chunk holds code to load all required file. This is a renv supported project. Call "renv::restore" to install all packages first.
+
+# renv::restore()
 library(papaja)
 library(MOTE)
 library(psych)
@@ -120,6 +123,8 @@ r_refs("Rotter-References.bib", append = TRUE,tweak = TRUE)
 ```
 
 ```{r setup-chunk, include=FALSE}
+#This chunk sets the global chunk environment.
+
 knitr::opts_chunk$set(dev = "png",
                       dpi = 600,
                       echo = FALSE,
@@ -129,6 +134,8 @@ knitr::opts_chunk$set(dev = "png",
 ```
 
 ```{r ggplot2, include=F}
+#This chunks holds the code for the ggplot2 based theme we used through the manuscript.
+
 apatheme=theme_bw()+
   theme(panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
@@ -173,6 +180,8 @@ Our first study had three objectives. First, to translate the items from the ori
 ## Participants
 
 ```{r data}
+#Loading and deviding the data for EFA, CFA and IRT analysis.
+
 data <- readRDS("WRotter.rds")
 Rotter.EFA <- data[1:300,11:33]
 efa.descriptives <- data[1:300,c(3,4,5,6,7,8)]
@@ -184,7 +193,7 @@ irt.descriptives <- data[,c(3,4,5,6,7,8)]
 ```
 
 ```{r missingdata, eval=FALSE, include=FALSE}
-
+#This chunk checks the missing values
 missing.EFA <- aggr(Rotter.EFA, plot =T)
 missing.CFA<- aggr(Rotter.CFA, plot =T)
 missing.IRT <- aggr(WRotter.IRT, plot =T)
@@ -193,7 +202,10 @@ missing.IRT <- aggr(WRotter.IRT, plot =T)
 
 
 ```{r Participants, eval=FALSE, include=FALSE}
+#This chunk holds codes for descriptives
 
+
+#Select the variables for demographics
 Descriptives.gender <- data %>% 
   dplyr::select("Gender", "Age", "Education Years", "Social Stance","Marital Status", "sample")
 
@@ -231,7 +243,7 @@ Descriptives.gender$`Marital Status` <- factor(Descriptives.gender$`Marital Stat
 
 
 
-
+#Creating a gtsummary based summary table:
 desc_table <-  gtsummary::tbl_summary(Descriptives.gender,
                                       by = sample,
 statistic = list(
@@ -251,17 +263,12 @@ digits = all_continuous() ~ 2,
 ```
 
 ```{r gender}
+#This chunk simply count the males and females
 Gender.count <- data.frame(table(data$Gender))
 Female <- Gender.count[1,2]
 Male <- Gender.count[2,2]
 ```
 
-
-```{r tabdesctipgen, eval=FALSE, include=FALSE, results='asis'}
-
-# desc_kable %>% kable_styling(latex_options = c("scale_down")) 
-desc_table
-```
 
 A large group of 312 Bangladeshi adults participated in Study 1. Twelve participants were excluded due to incomplete data. For exploring initial factor structure, a sample of 250-300 is recommended [@RN1249; @RN1250] . Participants were recruited through email invitation following snowballing techniques. Out of 300 participants `r printnum((Gender.count[1,2]/300)*100)`% (`r Gender.count[1,2]`) were female ranging in age from 21 to 52 years (29.20±4.92) and `r printnum((Gender.count[2,2]/300)*100)`% (`r Gender.count[2,2]`) were male with an age range between 21 to 45 years (32.39±4.17). Average years of education for the females were 15.28±2.09 and for the males were 16.71±.0.94. 72% of the participants were married.
 
@@ -287,6 +294,8 @@ We gave the amended synthesized scale to 8 mental health professionals. They ass
 
 
 ```{r NumericIdescriptives, include=F}
+#This chunk creates the Descriptive table for EFA.
+
 des.tab <- tabledown::des.tab(Rotter.EFA)
 ```
 
@@ -294,157 +303,10 @@ We used R (version 4.1.0), including R-packages "Psych" [@R-base] and "ggplot2"[
 
 ## Result and Discussion
 
-```{r desfigperp, include=FALSE}
-#EFA data
-library(gt)
-library(gtExtras)
-gt.data <- na.omit(Rotter.EFA)
-names(gt.data)[names(gt.data) == "item2"] <- "item02"
-names(gt.data)[names(gt.data) == "item3"] <- "item03"
-names(gt.data)[names(gt.data) == "item4"] <- "item04"
-names(gt.data)[names(gt.data) == "item5"] <- "item05"
-names(gt.data)[names(gt.data) == "item6"] <- "item06"
-names(gt.data)[names(gt.data) == "item7"] <- "item07"
-names(gt.data)[names(gt.data) == "item9"] <- "item09"
-
-#Creating long data
-gt.data.long <- as.data.frame(gather(gt.data, Items, value))
-gt.data.long$value <- as.numeric(as.character(gt.data.long$value))
-
-
-gt.data.tab <- gt.data.long %>% 
-  group_by(Items) %>% 
-  # calculate summary stats & create data for the histogram and density plot
-  dplyr::summarise(
-    nr = n(),
-    mean = mean(value, na.rm = TRUE),
-    med = median(value, na.rm = TRUE),
-    sd = sd(value, na.rm = TRUE),
-    hist_data = list(value),
-    dens_data = list(value),
-    .groups = "drop"
-  ) %>% 
-  gt() 
-
-
-gt.likert.Factor <-  as.data.frame(gt.data)
-
-
-#get the items name
-gt.items <- names(gt.likert.Factor ) 
-#Calculate percentage
-gt.percentage <- kutils::likert(gt.likert.Factor, vlist = gt.items ) 
-
-gt.percentage <- gt.percentage$table %>% 
-  as.data.frame(.)
-
-#data wrangling
-labels <- c("Score 0", "Score 1", "n")
-as.data.frame(labels)
-
-full.percentage <- cbind(labels,gt.percentage) #tables with labels  
-full.percentage<- t(full.percentage ) #transpose
-as.data.frame(full.percentage)
-full.percentage1 <- full.percentage[-1,-3] #removing 1st row and total column
-#full.percentage2 <- full.percentage1[, c(3, 4, 1, 2,5)]# rearranging
-as.data.frame(full.percentage1)
-
-
-colnames(full.percentage1) <- c("Internal Statement","External Statement")
-
-Items <- rownames(full.percentage1)
-as.data.frame(Items)
-full.percentage3 <- cbind(Items,full.percentage1)
-
-full.percentage4 <- full.percentage3[order(Items),] 
-
-
-full.percentage5 <- as.data.frame(full.percentage4[,-1]) %>% 
-  gt()
-
-
-gt.table <- gt.data.tab$'_data'
-gt.liket <- full.percentage5$"_data"
-
-
-Table <-  cbind( gt.table, gt.liket )%>% 
-  gt()%>% 
-  # histogram and density plots
-  gtExtras::gt_plt_dist(
-    hist_data,
-    type = "histogram",
-    line_color = "black", 
-    fill_color = "#00A08799",
-    bw = 1,
-    same_limit = TRUE)%>%
-  gtExtras::gt_plt_dist(
-    dens_data,
-    type = "density",
-    line_color = "black", 
-    fill_color = "#E64B3599",
-    bw = 0.75,
-    same_limit = TRUE
-  )%>%
-  # format decimals
-  fmt_number(columns = mean:sd, decimals = 1) %>%
-  # header
-  tab_header(
-    title = md("**Bangla Rotter's I-E Scale (n = 300)**"),
-    subtitle = md("Summary Descriptives")
-  ) %>% 
-  tab_footnote(
-    footnote = md("**Histogram**"),
-    locations = cells_column_labels(columns = hist_data)
-  ) %>%
-  tab_footnote(
-    footnote = md("**Density**"),
-    locations = cells_column_labels(columns = dens_data)
-  ) %>% 
-  #create groups of columns
-  tab_spanner(
-    label = "Items",
-    columns = Items
-  ) %>%
-  tab_spanner(
-    label = "Summary Statistics",
-    columns = nr:sd
-  ) %>%
-  tab_spanner(
-    label = "Graphics",
-    columns = hist_data:dens_data
-  )  %>%
-  # change column names to appear in the table
-  cols_label(
-    Items = ("Items"),
-    nr = ("n"),
-    mean = ("Mean"),
-    med = ("Median "),
-    sd = (("SD")),
-    hist_data = "Histogram",
-    dens_data = "Density"
-  ) %>%
-  
-  tab_spanner(
-    label = "Response Pattern",
-    columns = "Internal Statement":"External Statement"
-  ) %>%
-  # set alignment as per wish
-  cols_align(
-    align = "center",
-    columns = everything()
-  ) %>%
-  opt_align_table_header(align = "left") %>%
-  gtExtras::gt_plt_dot(
-    mean,
-    Items,
-    palette = "ggthemes::fivethirtyeight") %>%  
-  gtsave("Figures/600/descriptives.png",vwidth = 7000)
-```
-
-
 ### Sampling Adequacy
 
-```{r}
+```{r KMO}
+#This chunk checks the KMO value 
 KMO <- KMO(Rotter.EFA) 
 ```
 
@@ -453,25 +315,38 @@ Sampling adequacy was investigated by Kaiser-Meyer-Olkin (KMO) measures of sampl
 ### Descriptive Statistics and Item Analysis
 
 ```{r tabDes, results='asis'}
+#This chunk prints the descriptive table in the manuscript.
 apa_table(des.tab, caption = "Descriptive Statistics")
 ```
 
-```{r include=FALSE}
+```{r assumptions, include=FALSE}
+
+#Check the multivariate normality
 mardia <- mardia(Rotter.EFA, na.rm = T, plot =T)
+
+
+#Calculate tetrachoric correlation
 correlations <- tetrachoric(Rotter.EFA,smooth=TRUE)
+
+#Select the upper correlation matrix
 upper <- correlations$rho[upper.tri(correlations$rho, diag = F)]
 
+#Identify minimum and maximum correlation
 min.cor <- apa(min((upper)),2,F) #minimum cor.coefficient of the matrix
 max.cor <- apa(max((upper)),2,F) # max. correlation coefficient of the matrix
 
+
+#Conduct Bartlet test
 bartlet <- cortest.bartlett(Rotter.EFA, n =300)
 
+#Calculate percentage of correlations higher than |.30|.
 BigR = sum(correlations$rho >= abs(.30) & correlations$rho < abs(1.0), na.rm =T)/2 
 totR = length(Rotter.EFA)*(length(Rotter.EFA)-1)/2
 print (BigR/totR)*100
 
+
+#Classical test theory based item analysis
 Item_analysis <- psych::alpha(Rotter.EFA)
-Item_analysis$item.stats$r.cor
 R.cor.sum <- summary(Item_analysis$item.stats$r.cor)
 
 ```
@@ -482,62 +357,14 @@ Figure \@ref(fig:figCor)  and Supplementary Table 1 depict the inter-item correl
 
 ### Exploratory Factor Analysis
 
-```{r eval=FALSE, include=FALSE}
 
-library(paran)
-library(FactoMineR)
-library(factoextra)
-library(EFA.MRFA)
-library(EGAnet)
-library(sna)
 
+```{r correlations, include=FALSE}
+
+#Calculate the correlation
 correlations <- tetrachoric(Rotter.EFA,smooth=TRUE)
 
-EGA(correlations$rho, n= 300, plot.EGA = T, algorithm.args = list(steps = 4))
-
- paran(correlations$rho, iterations=500, centile=0, quietly=FALSE,
-      status=TRUE, all=FALSE, cfa=FALSE, graph=TRUE,
-      color=TRUE, col=c("black","red","blue"),
-      lty=c(1,2,3), lwd=1, legend=TRUE, file="",
-      width=640, height=640, grdevice="png", seed=0, mat=NA, n=NA)
-
-psych::VSS(Rotter.EFA, rotate = "promax", fm = 'ml', n.obs =300 )
-
-
-
-scree(correlations$rho,factors=TRUE,pc=TRUE,main="Scree plot",
-      hline=NULL,add=F)
-
-
-pca = PCA(Rotter.EFA)
-
-
-fviz_eig(pca, addlabels = T, max.overlaps = Inf)
-
-
-
-eigen_decomp <- eigen(correlations$rho)
-round(eigen_decomp$values, 3)
-
-
-hullEFA(Rotter,extr = "ULS", index_hull = "CAF", display = TRUE, graph = TRUE, details = TRUE)
-```
-
-```{r include=FALSE}
-library(FactoMineR)
-library(factoextra)
-
-pca = PCA(Rotter.EFA)
-```
-
-```{r figScree, eval=FALSE, fig.cap="Scree Plot with percentage of variance explained", include=FALSE, results='asis'}
-fviz_screeplot(pca, addlabels = T, max.overlaps = Inf, ylim =c(0,15),  main = NULL)
-```
-
-
-
-```{r include=FALSE}
-correlations <- tetrachoric(gt.data,smooth=TRUE)
+#Visualize the correlation
 qgraph::qgraph(correlations$rho, cut =.30, details =T, posCol = "green", negCol = "orangered3", 
        labels = names(Rotter.EFA))
 
@@ -547,6 +374,7 @@ corplot1 <- psych::corPlot(correlations$rho, diag =F, scale=T,
 
 p.mat <- correlation::cor_to_p(correlations$rho, 300, method = "tetrachoric")
 
+#Visualize the correlation (Used in the manuscript)
 corplot <- ggcorrplot::ggcorrplot(correlations$rho, p.mat=p.mat$p, insig = "pch", hc.order = FALSE, outline.col = "white", type = "lower", legend.title = "Correlation",sig.level = 0.05, pch.cex=1.5,
                       # insig = "blank",
            ggtheme = ggplot2::theme_minimal(),tl.srt = 90,colors = c("#E64B35FF", "white", "#3C5488FF") )+
@@ -565,15 +393,6 @@ corplot <- ggcorrplot::ggcorrplot(correlations$rho, p.mat=p.mat$p, insig = "pch"
 #p.mat <- cor_to_p(correlations$rho, 428, method = "polychoric")
 #to show pvalue in the fig add p.mat=p.mat
 ggsave("figures/300/Figure1.jpg",corplot, width = 3.5, height = 3.5, dpi = 300, bg ="white")
-# ggsave("figures/300/corplot.pdf",corplot, width = 3.5, height = 3.5, dpi = 300, bg ="white")
-# 
-# ggsave("figures/600/corplot.png",corplot, width = 3.5, height = 3.5, dpi = 600, bg ="white")
-# ggsave("figures/600/corplot.pdf",corplot, width = 3.5, height = 3.5, dpi = 600, bg ="white")
-# 
-# ggsave("figures/TIFF/Fig12.tiff",corplot, width = 3.5, height = 3.5, dpi = 600, bg ="white",compression = "lzw+p")
-# 
-# tiff("figures/TIFF/outfile.tif",corplot, compression = "lzw",width = 3.5,units = "in", height = 3.5, res=300)
-
 
 ```
 
@@ -588,9 +407,8 @@ knitr::include_graphics('figures/300/Figure1.jpg', dpi =600)
 
 
 ```{r MAP, include =F}
-
-#MAP
-map <- psych::VSS(gt.data, rotate = "varimax", fm = 'minres', n.obs =300 )
+#Calculate the MAP
+map <- psych::VSS(Rotter.EFA, rotate = "varimax", fm = 'minres', n.obs =300 )
 map.map <- as.data.frame(map$map)
 colnames(map.map) <- "MAP Statistic"
 map.statistics <- map$vss.stats[,c(1,2,5,6,7,10,11)]
@@ -598,24 +416,26 @@ full.map <- cbind(map.map,map.statistics)
 ```
 
 ```{r map-tab}
-
+#Create the MAP table (In the paper it is provided as Supp.)
 papaja::apa_table(full.map, caption = "Minimum Average Partial (MAP) method of factor numder determination. MAP Statistics is the lowest in the 5th row indicating five factors are required.")
 ```
 
 
-```{r, include = F}
+```{r cortab, include = F}
+#Save the correlation matrix
 cor.mat <- correlations$rho
 cor.mat <- as.data.frame(cor.mat)
 ```
 
-```{r results='asis'}
+```{r cortabprint, results='asis'}
+#Print the correlation matrix in the manuscript (In the paper it is provided as Supp.)
 apa_table(cor.mat,landscape = T )
 ```
 
 
 
 ```{r ParallelEFA, include=FALSE}
-
+#Factor Identification
 # Parallel analysis
 Horn <- paran::paran(correlations$rho, iterations=500, centile=0, quietly=FALSE,
            status=TRUE, all=FALSE, cfa=FALSE, graph=TRUE,
@@ -645,7 +465,7 @@ Unadjusted.EV$num = as.numeric(Unadjusted.EV$num)
 colnames(Unadjusted.EV) = c('eigenvalue', 'type', 'num')
 
 
-
+#Plot Parallel analysis output
 parallel = ggplot(Adjusted.EV, aes(x=num, y=eigenvalue, shape=type, color=type)) +
   #Add lines connecting data points
   geom_line(colour ='#DC000099')+
@@ -667,6 +487,9 @@ parallel = ggplot(Adjusted.EV, aes(x=num, y=eigenvalue, shape=type, color=type))
 ```
 
 ```{r ScreePlot, include=FALSE}
+
+#Scree plot
+
 Scree <- scree(correlations$rho,factors=TRUE,pc=TRUE,main="(B)",
       hline=NULL,add=F)
 
@@ -698,7 +521,7 @@ scree.plot <-ggplot(FA.Scree, aes(x=num, y=eigenvalue,color=type, shape=type))+
 ```
 
 ```{r HullEFA, include=FALSE}
-# HULL
+# HULL Method
 EFA.MRFA::hullEFA(Rotter.EFA,extr = "ULS", index_hull = "CAF", display = TRUE, graph = T,
         details = TRUE)
 hull <- ggplot2::last_plot()
@@ -710,16 +533,12 @@ Hull <- hull+ ggtitle(NULL)+xlab("Factor Number (Hull Method)")+ylab("CAF")+ aes
 ```
 
 ```{r FAperp, include=F}
+#Figure 2 creation
+
 factor <- cowplot::plot_grid(parallel, scree.plot,Hull, labels = c("(A)","(B)","(C)"),ncol=1, label_size = 15,align = "v", 
                   # label_fontfamily = "Arial",
                   label_fontface = "plain")
 ggsave("Figures/300/Figure2.jpg",factor, width =3.5, height = 7, dpi = 300)
-# ggsave("Figures/300/factors.pdf",factor, width =4, height = 7, dpi = 300)
-# 
-# 
-# ggsave("Figures/600/factors.png",factor, width =3.5, height = 7, dpi = 600)
-# ggsave("Figures/600/factors.pdf",factor, width =3.5, height = 7, dpi = 600)
-# ggsave("Figures/TIFF/Fig2.tiff",factor, width =3.5, height = 7, dpi = 600)
 
 ```
 
@@ -733,25 +552,21 @@ knitr::include_graphics('Figures/300/Figure2.jpg', dpi =600)
 
 Scree plot ( Fig\@ref(fig:facIdFig)) suggested a two-factor solution. In MAP method [@RN1224] the average squared off-diagonal values of the calculated partial correlation matrix are expected to be minimum when the correct number of factors are extracted. In our data set, this value reached the minimum after extracting the first factor. The more contemporary Hull method tries to find an optimal number of factors to balance model fit and the number of parameters [@RN1228]. This extraction method also supported a 1-factor model. Horn's parallel analysis [@RN1223]), like the Monte Carlo study, draws several sets of random data with the same number of participants as the original data set and compares the mean eigenvalues among the simulated and original data sets to retain optimal factors. Parallel analysis is also more immune to the normality assumptions violation[@RN1263]. In our data set parallel analysis with 500 iterations indicated 2 factor solution. As a result, we tested both one factor and two factor solutions.
 
-```{r tabfac, eval=FALSE, include=FALSE }
- 
-Factors <- c( 2, 1, 1, 2, 2, 5, 9)
-factor.matrix <- matrix(Factors, nrow = 7, ncol = 1, byrow= T)
-colnames(factor.matrix) <- ("Factor/Component")
-rownames(factor.matrix) <- c( "Parallel Analysis", "MAP", "Hull (CAF, CFI, RMSEA)", "Minimum Variance",  "ScreePlot", "Network", "EigenValues")
 
-apa_table(factor.matrix,caption = "Identified Factors")
-```
 
 ```{r include=FALSE}
+#Run the EFA for two factor
+
 correlations <- tetrachoric(Rotter.EFA,smooth=TRUE)
 
-
+#1st round
 fa.2F.1 <- fa(r=correlations$rho, nfactors = 2, fm= "wls", rotate = "varimax",residuals = TRUE, SMC = TRUE, n.obs =300)
 print(fa.2F.1, cut = .3, digits = 3, sort = T)
 
 reduced.model.2F.1 <- dplyr::select(Rotter.EFA, -item22, -item6,-item29,-item25, -item9)
 correlations.redu.2F.1 <-  tetrachoric(reduced.model.2F.1)
+
+#end round
 fa.2F.2 <- fa(r=correlations.redu.2F.1$rho, nfactors = 2, fm= "wls", rotate = "varimax",
               residuals = TRUE, SMC = TRUE, n.obs =300)
 print(fa.2F.2, cut = .3, digits = 3, sort = TRUE)
@@ -760,6 +575,8 @@ reduced.model.2F.2 <- dplyr::select(Rotter.EFA, -item22, -item6,-item29,-item25,
 
 correlations.redu.2F.2 <-  tetrachoric(reduced.model.2F.2)
 
+
+#3rd round
 fa.2F.3 <- fa(r=correlations.redu.2F.2$rho, nfactors = 2, fm= "wls", rotate = "varimax",
               residuals = TRUE, SMC = TRUE, n.obs =300)
 print(fa.2F.3, cut = .3, digits = 3, sort = TRUE)
@@ -768,6 +585,7 @@ reduced.model.2F.3 <- dplyr::select(Rotter.EFA, -item22, -item6,-item29,-item25,
 
 correlations.redu.2F.3 <-  tetrachoric(reduced.model.2F.3)
 
+#4th Round
 fa.2F.4 <- fa(r=correlations.redu.2F.3$rho, nfactors = 2, fm= "wls", rotate = "varimax",
               residuals = TRUE, SMC = TRUE, n.obs =300)
 print(fa.2F.4, cut = .3, digits = 3, sort = TRUE)
@@ -775,6 +593,8 @@ print(fa.2F.4, cut = .3, digits = 3, sort = TRUE)
 reduced.model.2F.4 <- dplyr::select(Rotter.EFA, -item22, -item6,-item29,-item25, -item9, -item12, -item3, -item17)
 
 correlations.redu.2F.4 <-  tetrachoric(reduced.model.2F.4)
+
+#5th Round
 
 fa.2F.5 <- fa(r=correlations.redu.2F.4$rho, nfactors = 2, fm= "wls", rotate = "varimax",
               residuals = TRUE, SMC = TRUE, n.obs =300)
@@ -784,77 +604,40 @@ reduced.model.2F.5 <- dplyr::select(Rotter.EFA, -item22, -item6,-item29,-item25,
 
 correlations.redu.2F.5 <-  tetrachoric(reduced.model.2F.5)
 
+
+#6th Round
+
 fa.2F.6 <- fa(r=correlations.redu.2F.5$rho, nfactors = 2, fm= "wls", rotate = "varimax",
               residuals = TRUE, SMC = TRUE, n.obs =300)
 print(fa.2F.6, cut = .3, digits = 3, sort = TRUE)
 
+#Check the residuals
 resd.2F.WLS =residuals(fa.2F.6, diag = FALSE, na.rm =T)
 hist(resd.2F.WLS, col ="red", main = "", xlab = "Residuals",ylim=c(0, 100))
 abline(h = 21, lwd = 2, lty = 2)
 abline(v =.1,lwd = 2, lty = 2)
 
-
+#Omega calculation
 omega.two <- omega(reduced.model.2F.5, nfactors=2, fm="wls",n.iter=1,p=.05,poly=FALSE,key=NULL,  flip=TRUE,digits=2, title="Omega",sl=TRUE,labels=NULL,plot=TRUE,n.obs=NA,rotate="oblimin",Phi=NULL,option="equal",covar=FALSE)
 ```
 
 
-```{r include=FALSE}
-rotter2 <- Rotter.EFA %>% 
-  dplyr::select(item7 ,item21,item26)
 
-psych::alpha(rotter2, check.keys = T)
-```
 
 ```{r TabEFA2}
+#This chunk creates the EFA output table and place it in the manuscript
 FAc <-tabledown::fac.tab( fa.2F.6, .3)
-
-
 
 apa_table(FAc, caption = "Two Factor Solution")
 ```
-
-
-```{r 3f-rejected, include=F}
-fa.3F.1 <- fa(r=correlations$rho, nfactors = 3, fm= "wls", rotate = "varimax",residuals = TRUE, SMC = TRUE, n.obs =300)
-print(fa.3F.1, cut = .3, digits = 3, sort = T)
-
-reduced.model.3F.1 <- dplyr::select(Rotter.EFA, -item2, -item6,-item29)
-correlations.redu.3F.1 <-  tetrachoric(reduced.model.3F.1)
-fa.3F.2 <- fa(r=correlations.redu.3F.1$rho, nfactors = 3, fm= "wls", rotate = "varimax",
-              residuals = TRUE, SMC = TRUE, n.obs =300)
-print(fa.3F.2, cut = .3, digits = 3, sort = TRUE)
-
-
-
-reduced.model.3F.2 <- dplyr::select(Rotter.EFA, -item2, -item6,-item29, -item25, -item26)
-correlations.redu.3F.2 <-  tetrachoric(reduced.model.3F.2)
-fa.3F.3 <- fa(r=correlations.redu.3F.2$rho, nfactors = 3, fm= "wls", rotate = "varimax",
-              residuals = TRUE, SMC = TRUE, n.obs =300)
-print(fa.3F.3, cut = .3, digits = 3, sort = TRUE)
-
-reduced.model.3F.3 <- dplyr::select(Rotter.EFA, -item2, -item6,-item29, -item25, -item26, -item18, -item9,-item4, -item5)
-correlations.redu.3F.3 <-  tetrachoric(reduced.model.3F.3)
-fa.3F.4 <- fa(r=correlations.redu.3F.3$rho, nfactors = 3, fm= "wls", rotate = "varimax",
-              residuals = TRUE, SMC = TRUE, n.obs =300)
-print(fa.3F.4, cut = .3, digits = 3, sort = TRUE)
-
-
-reduced.model.3F.4 <- dplyr::select(Rotter.EFA, -item2, -item6,-item29, -item25, -item26, -item18, -item9,-item4, -item5,
-                                    -item23, -item10)
-correlations.redu.3F.4 <-  tetrachoric(reduced.model.3F.4)
-fa.3F.5 <- fa(r=correlations.redu.3F.4$rho, nfactors = 3, fm= "wls", rotate = "varimax",
-              residuals = TRUE, SMC = TRUE, n.obs =300)
-print(fa.3F.5, cut = .3, digits = 3, sort = TRUE)
-
-
-
-```
-
 
 The initial two-factor solution with all 23 items showed a lack of fit in terms of RMSR value (RMSR =.11), presence of cross-loading items (item9 and item 25) and poor factor loading (\<.30) items (item6, item22, item29). After discarding these items, we ran another EFA with the remaining 18 items. This iteration of EFA also appeared as a misfit in terms of poor factor loading (Item12). Another five rounds of EFA were conducted with gradually identifying problematic items and discarding them from the model. Finally, a two-factor EFA solution with 14 items was accepted with RMSR = 0.08, no loading smaller than .30 and no cross-loading greater than .30. The first factor retained 9 items, and the second factor retained 5 items. The first factor explained only 20.5% of the total variance and the second factor explained only 9.6%. Such low explained variance by the factors were also reported in @RN1264 where they summarized the results of twenty explanatory factor analyses results on Rotter's I-E scale. It was observed that the explained variance by the 1st factor ranged between 7% to 20% and the 2nd factor ranges between 7-10%. The internal consistency of McDonald's omega coefficient for the first factor was satisfactory (Omega = .64). However, the internal consistency of the second factor (Omega = .39) and full scale (Omega = .63) indicated poor internal consistency [@RN1173].
 
 ```{r include=FALSE}
 correlations <- tetrachoric(Rotter.EFA,smooth=TRUE)
+
+#Run the EFA for one factor
+
 
 fa.1F.WLS.1 <- fa(r=correlations$rho, nfactors = 1, fm= "wls", rotate = "varimax",
               residuals = TRUE, SMC = TRUE, n.obs =300)
@@ -909,6 +692,8 @@ Next, we fit a one-factor solution, and after 4 rounds of identifying and exclud
 The obtained one-factor solution retained all items (with additional three items: 4, 9 & 13) of the first factor obtained in the previous two-factor solution. These items stemmed from the beliefs on the importance of personal ability and effort versus external luck in achieving a desired personal goal. Such a factor in the latent structure of Rotter's I-E scale is supported in the literature [@RN1252; @RN1253; @RN1254]. Our one-factor solution contained all the items retained in the "personal control" factor found by @RN1252. However the "political control" factor [@RN1252; @RN1254] reflecting the beliefs on people's influence over political events was not evident in our sample. Items belonging to the second factor of the obtained two-factor model in our study were stemmed from the beliefs on the interpersonal relationship (item7, 20, 26) and misfortune (item21, item 2). This factor was less interpretable and showed low internal consistency (Omega =.39). Thus, we retained the one-factor model, exhibiting better reliability estimates and meaningful interpretation than the two-factor model.
 
 ```{r TabEFA1}
+
+#This code creates the EFA output table for one factor and place it in the manuscript
 FAc <- fa.1F.WLS.4
 
 Factorloading <- cbind(FAc $loadings, FAc$communalities)
@@ -917,151 +702,6 @@ apa_table(unclass(Factorloading))
 ```
 
 # Study 2 Confirmation of Factor Structure and Psychometric Properties of Bangla Rotter's I-E scale
-
-```{r desfig, include=F}
-#CFA data
-gt.cfa <- Rotter.CFA %>% 
-  dplyr::select(item18 , item25 ,item11 , item15 , item16 , item10 ,item9 , item23 , item13 , item5 , item28 , item4)
-
-
-gt.data <- na.omit(gt.cfa)
-names(gt.data)[names(gt.data) == "item4"] <- "item04"
-names(gt.data)[names(gt.data) == "item5"] <- "item05"
-names(gt.data)[names(gt.data) == "item9"] <- "item09"
-
-#Creating long data
-gt.data.long <- as.data.frame(gather(gt.data, Items, value))
-gt.data.long$value <- as.numeric(as.character(gt.data.long$value))
-
-
-gt.data.tab <- gt.data.long %>% 
-  group_by(Items) %>% 
-  # calculate summary stats & create data for the histogram and density plot
-  dplyr::summarise(
-    nr = n(),
-    mean = mean(value, na.rm = TRUE),
-    med = median(value, na.rm = TRUE),
-    sd = sd(value, na.rm = TRUE),
-    hist_data = list(value),
-    dens_data = list(value),
-    .groups = "drop"
-  ) %>% 
-  gt() 
-
-
-gt.likert.Factor <-  as.data.frame(gt.data)
-
-
-#get the items name
-gt.items <- names(gt.likert.Factor ) 
-#Calculate percentage
-gt.percentage <- kutils::likert(gt.likert.Factor, vlist = gt.items ) 
-
-gt.percentage <- gt.percentage$table %>% 
-  as.data.frame(.)
-
-#data wrangling
-labels <- c("Score 0", "Score 1", "n")
-as.data.frame(labels)
-
-full.percentage <- cbind(labels,gt.percentage) #tables with labels  
-full.percentage<- t(full.percentage ) #transpose
-as.data.frame(full.percentage)
-full.percentage1 <- full.percentage[-1,-3] #removing 1st row and total column
-#full.percentage2 <- full.percentage1[, c(3, 4, 1, 2,5)]# rearranging
-as.data.frame(full.percentage1)
-
-
-colnames(full.percentage1) <- c("Internal Statement","External Statement")
-
-Items <- rownames(full.percentage1)
-as.data.frame(Items)
-full.percentage3 <- cbind(Items,full.percentage1)
-
-full.percentage3 <- full.percentage3[order(Items),] 
-full.percentage3 <- as.data.frame(full.percentage3[,-1]) %>% 
-  gt()
-
-
-gt.table <- gt.data.tab$'_data'
-gt.liket <- full.percentage3$"_data"
-
-
-Table <-  cbind( gt.table, gt.liket )%>% 
-  gt()%>% 
-  # histogram and density plots
-  gtExtras::gt_plt_dist(
-    hist_data,
-    type = "histogram",
-    line_color = "black", 
-    fill_color = "#00A08799",
-    bw = 1,
-    same_limit = TRUE)%>%
-  gtExtras::gt_plt_dist(
-    dens_data,
-    type = "density",
-    line_color = "black", 
-    fill_color = "#E64B3599",
-    bw = 0.75,
-    same_limit = TRUE
-  )%>%
-  # format decimals
-  fmt_number(columns = mean:sd, decimals = 1) %>%
-  # header
-  tab_header(
-    title = md("**Bangla Rotter's I-E Scale (n = 178)**"),
-    subtitle = md("Summary Descriptives")
-  ) %>% 
-  tab_footnote(
-    footnote = md("**Histogram**"),
-    locations = cells_column_labels(columns = hist_data)
-  ) %>%
-  tab_footnote(
-    footnote = md("**Density**"),
-    locations = cells_column_labels(columns = dens_data)
-  ) %>% 
-  #create groups of columns
-  tab_spanner(
-    label = "Items",
-    columns = Items
-  ) %>%
-  tab_spanner(
-    label = "Summary Statistics",
-    columns = nr:sd
-  ) %>%
-  tab_spanner(
-    label = "Graphics",
-    columns = hist_data:dens_data
-  )  %>%
-  # change column names to appear in the table
-  cols_label(
-    Items = ("Items"),
-    nr = ("n"),
-    mean = ("Mean"),
-    med = ("Median "),
-    sd = (("SD")),
-    hist_data = "Histogram",
-    dens_data = "Density"
-  ) %>%
-  
-  tab_spanner(
-    label = "Response Pattern",
-    columns = "Internal Statement":"External Statement"
-  ) %>%
-  # set alignment as per wish
-  cols_align(
-    align = "center",
-    columns = everything()
-  ) %>%
-  opt_align_table_header(align = "left") %>%
-  gtExtras::gt_plt_dot(
-    mean,
-    Items,
-    palette = "ggthemes::fivethirtyeight") %>%  
-  gtsave("Figures/600/descriptives_cfa.png",vwidth = 7000)
-```
-
-
 
 This study had three objectives. First, to confirm the latent factor structure of Bangla Rotter's I-E scale obtained in the first study by confirmatory factor analysis. Second, to gather validity evidence for our adapted scale [@RN1266]. Our first study explored the content validity in terms of I-CVI and S-CVI indexes and found satisfactory content validity. Validity evidence for the internal structure would be drawn from the CFA analysis. To check the scale's convergent validity, we calculated the bivariate correlation among the scores of Rotter's I-E scale and Internal Control Index (ICI) [@RN1267] and two sub-scales of Big five inventory [@RN1278; @RN1279[@RN1288]] . Third, to gather more information on our adapted scale using the item response theory (IRT)..
 
@@ -1092,192 +732,78 @@ Participants were invited to participate voluntarily in the online study. Once a
 ### Results and Discussion
 
 
-```{r include=FALSE}
+```{r CFA, include=FALSE}
+#CFA analysis
 
+#Define the model
 Rotter.one <- "LOC =~ item18 + item25 +item11 + item15 + item16 + item10 +item9 + item23 + item13 + item5 + item28 + item4"
 
+#Fit the model
 Rotter.one.fit <- cfa(Rotter.one,  Rotter.CFA,  mimic = "Mplus",
                      ordered = names(Rotter.CFA),estimator = "WLSMV")
 
+#Summary of the analysis
 One.factor.sum <- summary(Rotter.one.fit, fit.measures =TRUE,standardized = TRUE, rsq =TRUE)
 
+
+#Call the fit-indices
 One.factor.Cfa <- fitmeasures (Rotter.one.fit,c("gfi", "agfi", "nfi","rfi", 
                               "cfi.scaled","tli.scaled",
                               "rmsea", 
                               "srmr","aic"))
 
+#Check reliability
 One.factor.reliability <- semTools::reliability(Rotter.one.fit)
 One.factor.reliability[5]
+
+
+#Check Modification indices
 modfit.Cor.one <- modindices(Rotter.one.fit, sort. = TRUE) 
 modfit.Cor.one[modfit.Cor.one$mi>3.84,]
 
 
+#Redefine the model
 Rotter.one.2 <- "LOC =~ item18 + item25 +item11 + item15 + item16 + item10 +item9 + item13 + item5 + item28 + item4"
 
+#Refit
 Rotter.one.fit.2 <- cfa(Rotter.one.2,  Rotter.CFA,  mimic = "Mplus",
                      ordered = names(Rotter.CFA),estimator = "WLSMV")
 
+#Summary of the refit
 One.factor.Cfa.mod.sum <- summary(Rotter.one.fit.2, fit.measures =TRUE,standardized = TRUE, rsq =TRUE)
 
+
+#Fir indices for the 2nd CFA
 One.factor.Cfa.mod.fit <- fitmeasures (Rotter.one.fit.2,c("gfi", "agfi", "nfi","rfi", 
                               "cfi.scaled","tli.scaled",
                               "rmsea", 
                               "srmr","aic"))
 
+#Check reliability for second CFA
 One.factor.reliability.mod <- semTools::reliability(Rotter.one.fit.2)
 
 ```
 
-```{r Shortcut-Invariance, eval=FALSE, include=FALSE}
-library("semTools")
-
-Rotter.one.2 <- "LOC =~ item18 + item25 +item11 + item15 + item16 + item10 +item9 + item13 + item5 + item28 + item4"
-
-invariance.model <- measurementInvariance(model = Rotter.one.2,
-                                          data = Rotter.invariance,
-                                          group = "Gender",
-                                          ordered = names(Rotter.invariance),
-                                          estimator = "WLSMV",
-                                          strict = T)
-
-
-
-
-invariance.model[[1]] #configural Invariance
-invariance.model[[2]] # loading, weak, metric
-invariance.model[[3]] # intercept, strong, scaler
-invariance.model[[4]] # residual, strict
-invariance.model[[5]] # means, structural invariance
-```
-
-```{r Invariancedetail, eval=FALSE, include=FALSE}
-library(lavaan)
-#Creating a function to avoid class with summary output
-# summary.FitDiff<-function(object){
-#           print(object@nested)
-#           return(object@fit)
-# }
-
-
-# Configural invariance ####
-
-Rotter.one.2 <- "LOC =~ item18 + item25 +item11 + item15 + item16 + item10 +item9 + item13 + item5 + item28 + item4"
-
-
-configural <- cfa(model = Rotter.one.2,,
-                  data = Rotter.invariance,
-                  group = "Gender",
-                  ordered = names(Rotter.invariance),
-                  estimator = "WLSMV")
-
-summary(configural, fit.measures =TRUE,standardized = TRUE, rsq =TRUE)
-
-fitmeasures (configural,c("gfi", "agfi", "nfi","rfi", 
-                       "cfi","tli",
-                       "rmsea", "rmsea.ci.lower", "rmsea.ci.upper","srmr"))
-
-#Metric
-weak <- cfa(model = Rotter.one.2,,
-                  data = Rotter.invariance,
-                  group = "Gender",
-                  ordered = names(Rotter.invariance),
-                  estimator = "WLSMV", 
-            group.equal = "loadings")
-            
-summary(weak, fit.measures =TRUE,standardized = TRUE, rsq =TRUE)
-
-
-fitmeasures (weak,c("gfi", "agfi", "nfi","rfi", 
-                       "cfi","tli",
-                       "rmsea", "rmsea.ci.lower", "rmsea.ci.upper","srmr"))
-
-summary.FitDiff<-function(object){
-          print(object@nested)
-          return(object@fit)
-}
-
-
-First.comp <- compareFit (configural, weak)
-summary.FitDiff(First.comp)
-
-
-
-#Scaler
-strong <- cfa(Rotter.one.2,,
-                  data = Rotter.invariance,
-                  group = "Gender",
-                  ordered = names(Rotter.invariance),
-                  estimator = "WLSMV", 
-              group.equal = c("loadings", "intercepts"))
-summary(strong, fit.measures =TRUE,standardized = TRUE, rsq =TRUE)
-
-Second.comp <- compareFit  (weak, strong)
-summary.FitDiff(Second.comp)
-
-#residual
-strict <- cfa(Rotter.one.2,,
-                  data = Rotter.invariance,
-                  group = "Gender",
-                  ordered = names(Rotter.invariance),
-                  estimator = "WLSMV", 
-              group.equal = c("loadings", "intercepts", "residuals")) 
-
-summary(strict, fit.measures =TRUE,standardized = TRUE, rsq =TRUE)
-fitmeasures (strict,c("gfi", "agfi", "nfi","rfi", "cfi","tli","rmsea", "srmr","aic"))
-
-Third.comp <- compareFit(strict,strong)
-summary(Third.comp)
-#structural
-structural <-cfa(Rotter.one.2,,
-                  data = Rotter.invariance,
-                  group = "Gender",
-                  ordered = names(Rotter.invariance),
-                  estimator = "WLSMV", 
-                 group.equal = c("loadings", "intercepts", "residuals", "means","lv.variances","lv.covariances"))
-
-summary(structural, fit.measures =TRUE,standardized = TRUE, rsq =TRUE)
-fitmeasures (structural,c("gfi", "agfi", "nfi","rfi", "cfi","tli","rmsea", "srmr","aic"))
-
-fourth.comp <- compareFit  (structural,strict)
-summary(fourth.comp)
-comfit.par <- compareFit(configural, weak, strong, strict)
-summary (comfit.par)
-
-models <-  list("Configural" = configural, 
-                "Metric" = weak, 
-                "Scalar" = strong, 
-                "Residual" = strict)
-
-
-
-Invariance.table <- semTable::compareLavaan(models,
-              nesting = "Configural > Metric > Scalar > Residual", 
-              fitmeas = c("chisq.scaled", "df",  "cfi","tli","rmsea", "rmsea.ci.lower.scaled", "rmsea.ci.upper.scaled" ),
-              scaled = T,
-              chidif = T, digits = 2)
-
-colnames(Invariance.table) <- c("Chi-Square", "df", "CFI", "TLI", "RMSEA", "RMSEA 90% Lower CI", "RMSEA 90% Upper", "Chi-Square Difference", "df difference*", "p")
-
-
-```
-
-```{r InvarianceTab, eval=FALSE, include=FALSE, results='asis'}
-apa_table(Invariance.table, align = "c",  caption = "Invariance Analysis", note = " a = Metric vs Configural; b = Scalar vs Metric; c = Residual vs Scalar; d = Structural vs Residual;* =  df of model comparison", landscape = T, font_size = "footnotesize" )
-
-```
 
 We used the 'Lavaan'[@R-lavaan] package in Rstudio to conduct the categorical confirmatory factor analysis with robust weighted least square (WLSMV) estimator as our response data was dichotomous [@RN1231]. Commonly used Model fit benchmarks of @RN1162 focused on (i) the comparative fit index (CFI;) (ii) the Tucker Lewis index (TLI) (CFI/TLI, $goodfit \geq .95$, $acceptable fit\geq .90$) (ii) the root mean square error of approximation (RMSEA; close to .06 or below), (iii) the standardized root mean square (SRMR; close to .08 or below) to estimate the model fit. Additionally, the chi-square test is also used to estimate the absolute model fit. Table \@ref(tab:tabCfa) summarizes the fit indices of our fitted model. The fitted model failed to attain an absolute fit estimated by the chi-square test. It is necessary to keep in mind that the chi-square test is sensitive to sample size while estimating the model and not recommended to be used as the sole index of absolute model fit [@RN1231]. SRMR value was also higher than general guideline. It is evident from the work of [@RN1272] that for categorical data SRMR performs poorly. Subsequently we judged the model fit based on incremental and parsimony fit indices values. Incremental fit indices for the one factor model (CFI =`r apa(One.factor.Cfa[5],2,F)`, TLI = `r apa(One.factor.Cfa[6],2,F)`) and parsimony index (RMSEA = `r apa(One.factor.Cfa[7],2,F)`) were indicating acceptable fit. However, one item (item23) loaded poorly. By discarding the item one factor model attained best fit (CFI =`r apa(One.factor.Cfa.mod.fit[5],2,F)`, TLI = `r apa(One.factor.Cfa.mod.fit[6],2,F)`, RMSEA = `r apa(One.factor.Cfa.mod.fit[7],2,F)`). SRMR value (`r apa(One.factor.Cfa.mod.fit[8],2,F)`) was also close to the suggested guideline(.08) The internal consistency reliability coefficients McDonald's omega value for both models were satisfactory (.71 & .72, respectively). Fig\@ref(fig:figcfa) depicts both model.
 
 ```{r tabCfa, results='asis'}
+#Create CFA output table
+
+##Create an empty matrix
 CFa.matrix <- matrix("NA", nrow =2, ncol = 8)
+
+##Set the colnames
 colnames(CFa.matrix) = c("Model", "Chi-Squre", "df", "CFI", "TLI", "RMSEA", "SRMR", "McDonald's Omega")
+
+##Fill the matrix with values
 CFa.matrix[1,] = c("One Factor Model", "83.84", "54", apa(One.factor.Cfa[5],2,F), apa(One.factor.Cfa[6],2,F), apa(One.factor.Cfa[7],2,F), apa(One.factor.Cfa[8],2,F), apa(One.factor.reliability[5],2,F) )
 
 
 CFa.matrix[2,] = c("One Factor Model Modified", "72.24", "53", apa(One.factor.Cfa.mod.fit[5],2,F), apa(One.factor.Cfa.mod.fit[6],2,F), apa(One.factor.Cfa.mod.fit[7],2,F), apa(One.factor.Cfa.mod.fit[8],2,F)
                    ,apa(One.factor.reliability.mod[5],2,F))
 
-
+##Print the matrix as a table in the manuscript
 apa_table(CFa.matrix, caption = "Fit Indices Of CFA")
 
 ```
@@ -1286,16 +812,11 @@ apa_table(CFa.matrix, caption = "Fit Indices Of CFA")
 
 
 ```{r figcfa, fig.cap = "(A) One Factor Model of Bangla Rotter's I-E Scale (12 Items), (B) One Factor Model (11 Items)", fig.show="hold",fig.ncol = 2, out.width="50%",  warning=FALSE}
+
+#Print the CFA plots in the manuscript
+
+
 library(semPlot)
-
-# png(filename="Figures/600//CFAplot.png", 
-#     type="cairo",
-#     units="in", 
-#     width=6, 
-#     height=6, 
-#     pointsize=12, bg= "white", 
-#     res=1200)
-
 
 
 semPaths (Rotter.one.fit , 
@@ -1364,56 +885,12 @@ semPaths (Rotter.one.fit.2 ,
            
           )
 
-# dev.off()
+
 
 
 ```
 
 
-```{r eval=FALSE, include=FALSE}
-
-# png(filename="Figures/600//CFAplot2.png", 
-#     type="cairo", 
-#     units="in", 
-#     width=6, 
-#     height=6, 
-#     pointsize=12, bg= "white", 
-#     res=1200)
-
-semPaths (Rotter.one.fit.2 , 
-          what= "std",
-          #"hide", #(hides coefficeits)
-          #whatLabels = "std",
-          intercepts = F,
-          style ="OpenMx",
-          #residScale = 6,
-          theme = "colorblind",
-          nCharNodes = 0,
-          reorder =T,
-          rotation =2,
-          layout ="tree",
-          cardinal = T,
-          curvePivot =T,
-          sizeMan =6,#items length
-          sizeMan2 = 2,#items
-          sizeLat = 12,#factors
-          thresholds = FALSE,
-          equalizeManifests =F,
-          fade = FALSE,
-          edge.label.cex = .8,
-          #exoCov = T,
-          centerLevels = T,
-          #edge.color="black",
-          label.scale=T,
-          label.cex=1.2, #Font of factor and item name
-          residuals=T,
-           #exoVar=FALSE,
-          #fixedStyle=6, #Style of arrow (guide item)
-          #freeStyle=1#Style of arrow (other item), #XKCD = TRUE
-           
-          )
-# dev.off()
-```
 
 
 ### The Validity of Bangla Rotter's I-E Scale
@@ -1421,8 +898,10 @@ semPaths (Rotter.one.fit.2 ,
 We have gathered satisfactory content validity evidence of Rotter's I-E scale in our first study by I-CVI and S-CVI. Our second study gathered structural validity evidence by confirming the one-factor solution obtained in the EFA. Lastly, we gathered convergent validity evidence based on correlational analysis among the total score of ICI [@RN1267], neuroticism, openness to experience [@RN1287] and Bangla Rotter's I-E scale
 
 
-```{r include =F}
+```{r val-rel, include =F}
 library(MBESS)
+
+#This chunks calculates the reliability of the scales used in the validation 
 openness <- data %>% 
   dplyr::select(O1:O10)
 
@@ -1436,7 +915,9 @@ omega2 <- psych::omega(neuro,nfactors=1)
 
 
 
-```{r include=FALSE}
+```{r validity, include=FALSE}
+#Create the dataframe for concurrent validity
+
 Validity_Rotter <-  data[301:478,]
 Validity_Rotter <- Validity_Rotter %>% 
   rowwise() %>% 
@@ -1444,7 +925,9 @@ Validity_Rotter <- Validity_Rotter %>%
 
 Validity.cor <- Validity_Rotter %>% 
   dplyr::select(Uni_Total, Total_Neuro, Total_Opennes, DI_Total)
+
 data.frame(Validity.cor)
+
 colnames(Validity.cor) =c ("Rotter's I-E Scale", "Neuroticism", "Opennesss", "Internal Control Index")
 
 
@@ -1453,6 +936,8 @@ colnames(Validity.cor) =c ("Rotter's I-E Scale", "Neuroticism", "Opennesss", "In
 
 
 ```{r correlationfunc}
+#This code creates a function to run correlation analysis across the data frame with apa notions.
+
 glrstab<- function(x, export=FALSE) {
  
  r <-corr.test(x)$r	#taking just the correlation matrix; no N, or p
@@ -1499,12 +984,14 @@ glrstab<- function(x, export=FALSE) {
 ```
 
 
-```{r}
+```{r validity-tab}
+#Calculate the concurrent validity
 Cor <-glrstab(Validity.cor) #the function in action!
 
 ```
 
 ```{r tabvalidity, include=FALSE, results='asis'}
+#Print the concurrent validity analysis table
 apa_table(Cor, escape  = FALSE
                 , caption = "Correlation matrix of the main variables"
                 , note    = "**p < .001")
@@ -1515,6 +1002,9 @@ Table\@ref(tab:tabvalidity) summarized the correlation coefficients. Bangla Rott
 ### IRT Analysis
 
 ```{r samplesizeIRT, eval=FALSE, message=FALSE, warning=FALSE, include=FALSE, results='hide', width=60}
+
+#Simulation of sample size. 
+
 m <-  11 # item number
 n <- c(50, 75, 100, 150, 200, 300, 350) # sample size
 design <- as.data.frame(n)
@@ -1570,60 +1060,49 @@ axis(1, at = nvec)
 To gather more information on our retained one-factor solution, we sought Item Response Theory (IRT). IRT complements the conventional classical test theory-based analysis by gathering information on item discrimination and item difficulty. IRT judges an item's quality by providing item information in the light of participants' trait level ($\theta$). We gathered evidence on item quality as well as item fit, person fit and model by fitting a two-parameter logistic model (2PL) model to the combined EFA sample and CFA sample (n =532) in RStudio with the "mirt" package [@R-mirt]. We did a Monte Carlo simulation using "SimDesign" package [@R-SimDesign] with sample sizes varying from 50-350 and calculated average root mean squared error(RMSE) to estimate the optimal sample size for the 2PL model with 11 items. The RMSE became stable for n = 200 to 300 (RMSE ranging between .25-.32). Our combined sample size was larger than the estimated sample size for stability.
 
 ```{r include=FALSE}
+#IRT analysis
+
 WRotter.IRT <- data[,11:33]
 
+#Dataframe for IRT
 Rotter.one.IRT <- WRotter.IRT %>% 
   dplyr::select(item18, item25, item11, item15, item16, item10, item9, item13,  item5,  item28, item4)
 
 
+#IRT model fitting
 unidimensional_fit <- mirt(Rotter.one.IRT, model = 1, itemtype = '2PL', SE = TRUE, Se.type = 'MHRM',technical = list(NCYCLES = 10000))
 
+#M2 statistics
 unidim_fit_indices <- M2(unidimensional_fit)
 
 
+#Item fit statistics
 unidimensional_itemfit <- itemfit(unidimensional_fit,
                                   fit_stats = c("S_X2", "G2","Zh", "infit"),
                                   impute=10)
 
+#Item parameters 
 unidimensional_params <- coef(unidimensional_fit, IRTpars = TRUE, simplify = TRUE, rawug = FALSE) 
 
+##Item difficulty and discrimination
 unidimensional_items <- data.frame(unidimensional_params$items)
 
+#Standard error
 unidimensional_se <-coef(unidimensional_fit, IRTpars = TRUE,printSE = TRUE)
 
 
-
+#Latent score estimation
 unidiemsional.laten_personality <- as.vector(fscores(unidimensional_fit, method = "EAP",
                                            full.scores = TRUE, 
                                            full.scores.SE = F))
 
 
-
+#Calculate the total score
 Rotter.one_total <- Rotter.one.IRT %>% 
   rowwise() %>% 
   mutate(Total = sum(item18, item25, item11, item15, item16, item10, item9,  item13,  item5,  item28, item4))
 
 
-Ability.unidiemsionality <- data.frame(Rawscore = Rotter.one_total$Total,
-                      Theta = unidiemsional.laten_personality )
-
-
-ggplot(Ability.unidiemsionality, aes(x =Theta, y =Rawscore)) +
-  geom_point() +
-  geom_smooth(method='lm', se =TRUE, formula= y~x,colour = "red")+
-  xlim(-2,2) +
-  ylim(0,15)
-
-library(corx)
-Correlation.uni <- Ability.unidiemsionality %>% 
-corx(triangle = "lower",
-       stars = c(0.05, 0.01, 0.001),
-       describe = c(`$M$` = mean, `$SD$` = sd))
-
-papaja::apa_table(Correlation.uni$apa, 
-          caption = "Construct Validity",
-          note = "* p < 0.05; ** p < 0.01; *** p < 0.001",
-          escape = TRUE)
 
 # mirt::plot(unidimensional_fit, type="infoSE")
 
@@ -1632,6 +1111,8 @@ papaja::apa_table(Correlation.uni$apa,
 It required 16 iterations (Log-likelihood -3152.126) for the 2PL model to converge. Item fit statistics signed chi-square test (S-X2)[@RN1285; @RN1286] indicated all items were a good fit. Model fit statistics estimated from the model indicated a best fit for the the 2PL model, M2 = `r apa(unidim_fit_indices$M2,2,T)`, df = `r unidim_fit_indices$df`, p= `r apa(unidim_fit_indices$p,2,F)`, RMSEA = `r apa(unidim_fit_indices$RMSEA,2,F)`[`r apa(unidim_fit_indices$RMSEA_5,2,F)` - `r apa(unidim_fit_indices$RMSEA_95,2,F)`], CFI = `r apa(unidim_fit_indices$CFI,2,F)`, TLI = `r apa(unidim_fit_indices$TLI,2,F)`.
 
 ```{r UnidimensionalPersonfit, message=FALSE, warning=FALSE, include=FALSE}
+
+#Person fit check
 unidimensional.personfit <- personfit(unidimensional_fit) 
 
 unidimensional.personfit_model_misfits <- subset(unidimensional.personfit, Zh < -2)
@@ -1640,13 +1121,8 @@ nrow(unidimensional.personfit_model_misfits)
 personfit <- ggplot(unidimensional.personfit, aes(x=Zh)) + geom_histogram(binwidth=.5,col=I("black"),fill="#00A08799")+geom_vline(xintercept = -2)+
   labs( y="Number of Participants", x = "Zh Statistics")+apatheme
 
-
 ggsave("Figures/300/Figure4.jpg",personfit, width = 3.5, height = 3.5, dpi = 300, bg = "white")
-# ggsave("Figures/300/personfit.pdf",personfit, width = 3.5, height = 3.5, dpi = 300, bg = "white")
-# 
-# ggsave("Figures/600/personfit.png",personfit, width = 3.5, height = 3.5, dpi = 600, bg = "white")
-# ggsave("Figures/600/personfit.pdf",personfit, width = 3.5, height = 3.5, dpi = 600, bg = "white")
-# ggsave("Figures/TIFF/Fig4.tiff",personfit, width = 3.5, height = 3.5, dpi = 600, bg = "white")
+
 
 ```
 
@@ -1657,6 +1133,7 @@ knitr::include_graphics('Figures/300/Figure4.jpg', dpi =600)
 Person fit indicates the validity and meaningfulness of the fitted model at the participants latent trait level [@RN1274]. We estimated the person fit statistics using standardized fit index Zh statistics [@drasgow1985appropriateness]. Zh \< -2 should be considered as a misfit. Fig\@ref(fig:figfmisfit) indicates that Zh is larger than -2 for most participants, suggesting a good fit of the selected IRT model.
 
 ```{r tabIRT, results='asis'}
+#Print the IRT Table
 IRT.Description <- cbind(unidimensional_itemfit$item, apa(unidimensional_items$a,2,T), apa(unidimensional_items$b,2,T),apa(unidimensional_itemfit$S_X2,2,T), apa(unidimensional_itemfit$df.S_X2,2,T), apa(unidimensional_itemfit$p.S_X2,2,F), apa(unidimensional_itemfit$outfit,2,T), apa(unidimensional_itemfit$infit,2,T))
 colnames(IRT.Description) = c("Items", "Discrimination","Difficulty", "S-X2", "df", "p", "outfit", "infit" )
 apa_table(IRT.Description,landscape = F, caption = "IRT Description")
@@ -1665,12 +1142,17 @@ apa_table(IRT.Description,landscape = F, caption = "IRT Description")
 We categorize the item discrimination in table\@ref(tab:tabIRT) using the following criteria of @RN1275, none = 0; very low =0.01 to 0.34; low = 0.35 to 0.64; moderate = 0.65 to 1.34 ; high = 1.35 to 1.69; very high \>1.70. Among the 11 items, 6 items showed moderate discrimination and one item showed high discrimination (item16). Three items (item 18, 25 & 11) had very high discrimination and one item (item 4) had low discrimination. All items were in the suggested guidelines of item discrimination parameter: 0.5$\le$ Item Discrimination $\le$ 2.0 (except items 18 & 4), and the item difficulty parameters: -3.0 $\le$ Item Difficult$\le$ 3.0 [@RN1275]. The relationship between participants' latent traits and the probability of responding to the preferred response option for the items is shown by the item characteristics curve (ICC) (Figure\@ref(fig:IIC)). For an easy item to have a probability of .50 a latent trait level $\theta$ = -1 is required for easy items, $\theta$ = 0 is required for moderate items and $\theta$ = 1 is required for hard items [@Desjardins]. Examination of the ICCs made it evident that our adapted scale contained all three types of items with item difficulty parameters ranging from -1.06 to 2.88, reflecting a sizable range of underlying locus of control trait.
 
 ```{r item-difficulty-cat, include =F}
+#Categorize items based on discrimination and difficulty
+
+##Discrimination
 very_easy <-  sum(unidimensional_items$b< -2)
 easy=  sum(-2<unidimensional_items$b &  unidimensional_items$b<= -0.50)
 medium= sum(-0.51<unidimensional_items$b &  unidimensional_items$b<= 0.50)
 hard= sum(.51<unidimensional_items$b &  unidimensional_items$b<= 2) 
 very_hard =sum(unidimensional_items$b> 2)
 
+
+##Difficulty
 very_easy_items <- unidimensional_items[which(unidimensional_items$b< -2),]
 easy_items <- unidimensional_items[which(-2<unidimensional_items$b &  unidimensional_items$b<= -0.50),]
 medium_items <-unidimensional_items[which(-0.51<unidimensional_items$b &  unidimensional_items$b<= 0.50),]
@@ -1683,6 +1165,8 @@ very_hard_items <-unidimensional_items[which(unidimensional_items$b> 2),]
 
 
 ```{r itr-tic, include=F}
+#Plot the TIC
+
 ggtestinfo_se <- function(dataframe,model){
   Theta <- matrix(seq(-6,6, by = .1))
   T1 <- 0
@@ -1712,8 +1196,8 @@ scale_fill_identity()+xlab(expression(theta))+ylab(expression(I(theta)))
 
 
 
-```{r irt-icc,  include=F,warning=FALSE}
-
+```{r irt-iic,  include=F,warning=FALSE}
+#Plot Item information curve
 pacman::p_load(reshape,ggsci, ggrepel)
 
 
@@ -1763,30 +1247,12 @@ ifc <- ggplot(item.info.data.2,aes(Theta,value,col=variable, label = variable))+
   ylab(expression(I(theta)))
 
 ggsave("Figures/300/Figure6.jpg",ifc, width = 7, height = 8, dpi = 300, bg = "white")
-# ggsave("Figures/300/ifc.pdf",ifc, width = 7, height = 8, dpi = 300, bg = "white")
-# 
-# ggsave("Figures/600/ifc.png",ifc, width = 7, height = 8, dpi = 600, bg = "white")
-# ggsave("Figures/600/ifc.pdf",ifc, width = 7, height = 8, dpi = 600, bg = "white")
-# 
-# 
-# ggsave("Figures/TIFF/Fig6.tiff",ifc, width = 7, height = 8, dpi = 600, bg = "white")
 
-
-#plot(unidimensional_fit, type = "trace", facet =F, main = "(A)") #item cha. curve
-#plot(unidimensional_fit, type = "infoSE", main = "(B)") #testinvo
-#plot(unidimensional_fit, type = "infotrace", main = "(C)") #iteminfo
-ggplot(Ability.unidiemsionality, aes(x =Theta, y =Rawscore )) +
-  geom_point() +
-  geom_smooth(method='lm', se =TRUE, formula= y~x,colour = "blue")+
-  xlim(-2,2) +
-  ylim(0,15)+
-  labs(x = "Theta",
-       y = "Raw Score") + 
-  labs(title = "(D)")+
-    theme_apa()
 ```
 
 ```{r IRT-reliability, include=F}
+#Estimate merginal reliability
+
 ggreliability <- function(dataframe,model){
   Theta <- matrix(seq(-6,6, by = .1))
   T1 <- 0
@@ -1812,7 +1278,7 @@ scale_fill_identity()
 ```
 
 ```{r icc}
-
+#Plot ICC
 pacman::p_load(reshape,ggsci, ggrepel)
 # Extract all items 
 # Compute the probability trace lines
@@ -1921,45 +1387,12 @@ ggsave("Figures/300/Figure5.jpg", width = 7, height = 9, dpi = 300, bg = "white"
 ```
 
 ```{r, include =F}
-
+#plot the merginal relibility
 reliability <- plot(unidimensional_fit, type = 'rxx', theta_lim = c(-6, 6), 
       main="" )
 marginal.rel <- marginal_rxx(unidimensional_fit)
 
 
-
-```
-
-
-
-```{r}
-rotter.estimation <- as.vector(fscores(unidimensional_fit, method = "EAP",
-                                           full.scores = TRUE, 
-                                           full.scores.SE = F))
-library(RColorBrewer)
-rotter.e <- as.data.frame(rotter.estimation)
-
-
-estimation <- rotter.e
-
-
-
-
-threshold <- unidimensional_items[,1:2]
-
-itemlevelcolors <- brewer.pal(11, "Paired")
-
-jpeg("Figures/300/wm.png", width = 1600, height = 750)
-WrightMap::wrightMap(estimation, threshold, 
-          item.prop = 0.65,
-          main.title = "Rotter's I-E Scale",
-          dim.names = "Personal Control Vs Luck",
-          thr.sym.col.fg = itemlevelcolors,
-          thr.sym.col.bg = itemlevelcolors,
-          vertLines = TRUE,
-          show.thr.lab = T,
-          dim.color = brewer.pal(5, "Set3"))
-dev.off()
 
 ```
 
@@ -1992,13 +1425,6 @@ Lastly, we gathered more information on the item quality of the retained items i
 Based on the psychometric analysis conducted, we recommend that researchers use this scale to measure an individual's locus of control with precision. The scale can potentially be used in clinical and counseling settings to identify the LoC, thus facilitating the therapeutic process.
 
 
-```{r eval=FALSE, include=FALSE}
-library("lordif")
-
-Rotter.one.IRT
-rotter.DIF <- lordif(as.data.frame(Rotter.one.IRT), data$Gender, criterion = "Chisqr")
-rotter.DIF$stats[, 1:5]
-```
 
 # Future Directions
 

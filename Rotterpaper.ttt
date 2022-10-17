@@ -74,12 +74,12 @@ MAP Statistic & \multicolumn{1}{c}{dof} & \multicolumn{1}{c}{chisq} & \multicolu
 \begin{lltable}
 
 \begin{longtable}{llllllllllllllllllllllll}\noalign{\getlongtablewidth\global\LTcapwidth=\longtablewidth}
-\caption{\label{tab:unnamed-chunk-8}}\\
+\caption{\label{tab:cortabprint}}\\
 \toprule
  & \multicolumn{1}{c}{item2} & \multicolumn{1}{c}{item3} & \multicolumn{1}{c}{item4} & \multicolumn{1}{c}{item5} & \multicolumn{1}{c}{item6} & \multicolumn{1}{c}{item7} & \multicolumn{1}{c}{item9} & \multicolumn{1}{c}{item10} & \multicolumn{1}{c}{item11} & \multicolumn{1}{c}{item12} & \multicolumn{1}{c}{item13} & \multicolumn{1}{c}{item15} & \multicolumn{1}{c}{item16} & \multicolumn{1}{c}{item17} & \multicolumn{1}{c}{item18} & \multicolumn{1}{c}{item20} & \multicolumn{1}{c}{item21} & \multicolumn{1}{c}{item22} & \multicolumn{1}{c}{item23} & \multicolumn{1}{c}{item25} & \multicolumn{1}{c}{item26} & \multicolumn{1}{c}{item28} & \multicolumn{1}{c}{item29}\\
 \midrule
 \endfirsthead
-\caption*{\normalfont{Table \ref{tab:unnamed-chunk-8} continued}}\\
+\caption*{\normalfont{Table \ref{tab:cortabprint} continued}}\\
 \toprule
  & \multicolumn{1}{c}{item2} & \multicolumn{1}{c}{item3} & \multicolumn{1}{c}{item4} & \multicolumn{1}{c}{item5} & \multicolumn{1}{c}{item6} & \multicolumn{1}{c}{item7} & \multicolumn{1}{c}{item9} & \multicolumn{1}{c}{item10} & \multicolumn{1}{c}{item11} & \multicolumn{1}{c}{item12} & \multicolumn{1}{c}{item13} & \multicolumn{1}{c}{item15} & \multicolumn{1}{c}{item16} & \multicolumn{1}{c}{item17} & \multicolumn{1}{c}{item18} & \multicolumn{1}{c}{item20} & \multicolumn{1}{c}{item21} & \multicolumn{1}{c}{item22} & \multicolumn{1}{c}{item23} & \multicolumn{1}{c}{item25} & \multicolumn{1}{c}{item26} & \multicolumn{1}{c}{item28} & \multicolumn{1}{c}{item29}\\
 \midrule
