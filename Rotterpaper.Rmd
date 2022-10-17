@@ -60,14 +60,13 @@ output            :
   latex_engine: xelatex
 mainfont: Arial
 ---
-
+last updated: `r Sys.Date()`
 
 ```{r dependencymanager, warning=FALSE, include=FALSE}
 knitr::opts_chunk$set(warning = F, error = F, message = F)
 
 
 ```
-
 
 ```{r install-pack, eval=FALSE, include=FALSE}
 #if "packrat" doesnot work you can run this chunk manually to get all required packs"
@@ -99,7 +98,7 @@ install.packages("gtsummary")
 ```
 
 ```{r setup, include = FALSE}
-#This chunk holds code to load all required file. This is a renv supported project. Call "renv::restore" to install all packages first.
+#This chunk holds code to load all required file. This is a renv supported project. Call renv::restore to install all packages first.
 
 # renv::restore()
 library(papaja)
